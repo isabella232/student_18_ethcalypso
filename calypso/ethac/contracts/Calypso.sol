@@ -3,6 +3,8 @@ pragma solidity ^0.4.24;
 import "./Owners.sol";
 import "./WriteRequestHolder.sol";
 import "./WriteRequest.sol";
+import "./ReadRequest.sol";
+import "./ReadRequestHolder.sol";
 
 
 contract Calypso {
@@ -10,6 +12,7 @@ contract Calypso {
     Owners private owners;
     WriteRequestHolder private wrHolder;
     mapping(bytes32 => bool) hasReq;
+    ReadRequestHolder private rrHolder;
 
 
     //The addresses of the owners of the contract
@@ -34,6 +37,12 @@ contract Calypso {
     function getRequestByID(bytes32 b) public view returns (WriteRequest) {
         WriteRequest wr = wrHolder.getRequestByID(b);
         return wr;
+    }
+
+    function AddReadRequest(ReadRequest rr) public {
+        bytes32 write = rr.writeRequest();
+        require(wrHolder.canRead(write), "There is no corresponding read request");
+        rrHolder.addReadRequest(rr);
     }
 
     //This  functions is basically only there for testing purposes.

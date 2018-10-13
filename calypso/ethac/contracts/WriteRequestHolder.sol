@@ -19,7 +19,8 @@ contract WriteRequestHolder {
     function getRequestByID(bytes32 b) public view returns (WriteRequest) {
         return wrmap[b];
     }
-    function has() public view returns (bool) {
-        return true;
+
+    function canRead(bytes32 id) public returns (bool) {
+        return hasRequest[id];
     }
 }
