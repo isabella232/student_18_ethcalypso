@@ -1,0 +1,1647 @@
+{
+  "contractName": "WriteRequestHolder",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "hasRequest",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "wrmap",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "wr",
+          "type": "address"
+        }
+      ],
+      "name": "addWriteRequest",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "b",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRequestByID",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "has",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610477806100206000396000f30060806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063034fb16d146100725780631029a017146100e357806376959033146101265780638bdb55d41461016f578063b689d5ac146101e0575b600080fd5b34801561007e57600080fd5b506100a1600480360381019080803560001916906020019092919050505061020f565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156100ef57600080fd5b50610124600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610254565b005b34801561013257600080fd5b5061015560048036038101908080356000191690602001909291905050506103ef565b604051808215151515815260200191505060405180910390f35b34801561017b57600080fd5b5061019e600480360381019080803560001916906020019092919050505061040f565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156101ec57600080fd5b506101f5610442565b604051808215151515815260200191505060405180910390f35b600060016000836000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff169050919050565b60008173ffffffffffffffffffffffffffffffffffffffff1663ab9dbd076040518163ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401602060405180830381600087803b1580156102ba57600080fd5b505af11580156102ce573d6000803e3d6000fd5b505050506040513d60208110156102e457600080fd5b810190808051906020019092919050505090508160016000836000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600160026000836000191660001916815260200190815260200160002060006101000a81548160ff02191690831515021790555060008290806001815401808255809150509060018203906000526020600020016000909192909190916101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505050565b60026020528060005260406000206000915054906101000a900460ff1681565b60016020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600060019050905600a165627a7a723058207f122d46cdf4c6422a76749bc71e242c8fb52d6bb9db14e066ea5500e7c9aa010029",
+  "deployedBytecode": "0x60806040526004361061006d576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063034fb16d146100725780631029a017146100e357806376959033146101265780638bdb55d41461016f578063b689d5ac146101e0575b600080fd5b34801561007e57600080fd5b506100a1600480360381019080803560001916906020019092919050505061020f565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156100ef57600080fd5b50610124600480360381019080803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050610254565b005b34801561013257600080fd5b5061015560048036038101908080356000191690602001909291905050506103ef565b604051808215151515815260200191505060405180910390f35b34801561017b57600080fd5b5061019e600480360381019080803560001916906020019092919050505061040f565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b3480156101ec57600080fd5b506101f5610442565b604051808215151515815260200191505060405180910390f35b600060016000836000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff169050919050565b60008173ffffffffffffffffffffffffffffffffffffffff1663ab9dbd076040518163ffffffff167c0100000000000000000000000000000000000000000000000000000000028152600401602060405180830381600087803b1580156102ba57600080fd5b505af11580156102ce573d6000803e3d6000fd5b505050506040513d60208110156102e457600080fd5b810190808051906020019092919050505090508160016000836000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550600160026000836000191660001916815260200190815260200160002060006101000a81548160ff02191690831515021790555060008290806001815401808255809150509060018203906000526020600020016000909192909190916101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550505050565b60026020528060005260406000206000915054906101000a900460ff1681565b60016020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b600060019050905600a165627a7a723058207f122d46cdf4c6422a76749bc71e242c8fb52d6bb9db14e066ea5500e7c9aa010029",
+  "sourceMap": "62:540:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;62:540:3;;;;;;;",
+  "deployedSourceMap": "62:540:3:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;417:104;;8:9:-1;5:2;;;30:1;27;20:12;5:2;417:104:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;238:171;;8:9:-1;5:2;;;30:1;27;20:12;5:2;238:171:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;187:42;;8:9:-1;5:2;;;30:1;27;20:12;5:2;187:42:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;135:45;;8:9:-1;5:2;;;30:1;27;20:12;5:2;135:45:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;527:72;;8:9:-1;5:2;;;30:1;27;20:12;5:2;527:72:3;;;;;;;;;;;;;;;;;;;;;;;;;;;417:104;473:12;505:5;:8;511:1;505:8;;;;;;;;;;;;;;;;;;;;;;;;;;;498:15;;417:104;;;:::o;238:171::-;298:9;310:2;:8;;;:10;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;310:10:3;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;310:10:3;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;310:10:3;;;;;;;;;;;;;;;;298:22;;342:2;331:5;:8;337:1;331:8;;;;;;;;;;;;;;;;;;:13;;;;;;;;;;;;;;;;;;371:4;355:10;:13;366:1;355:13;;;;;;;;;;;;;;;;;;:20;;;;;;;;;;;;;;;;;;386:6;398:2;386:15;;39:1:-1;33:3;27:10;23:18;57:10;52:3;45:23;79:10;72:17;;0:93;386:15:3;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;238:171;;:::o;187:42::-;;;;;;;;;;;;;;;;;;;;;;:::o;135:45::-;;;;;;;;;;;;;;;;;;;;;;:::o;527:72::-;563:4;587;580:11;;527:72;:::o",
+  "source": "pragma solidity ^0.4.24;\r\n\r\n\r\nimport \"./WriteRequest.sol\";\r\n\r\ncontract WriteRequestHolder {\r\n\r\n    WriteRequest[] private holder;\r\n    mapping(bytes32 => WriteRequest) public wrmap;\r\n    mapping(bytes32 => bool) public hasRequest;\r\n\r\n    function addWriteRequest(WriteRequest wr) public {\r\n        bytes32 h = wr.getID();\r\n        wrmap[h] = wr;\r\n        hasRequest[h] = true;\r\n        holder.push(wr);\r\n    }\r\n\r\n    function getRequestByID(bytes32 b) public view returns (WriteRequest) {\r\n        return wrmap[b];\r\n    }\r\n    function has() public view returns (bool) {\r\n        return true;\r\n    }\r\n}",
+  "sourcePath": "C:\\Users\\Bjorn\\Documents\\github\\student_18_ethcalypso\\contracts\\WriteRequestHolder.sol",
+  "ast": {
+    "absolutePath": "/C/Users/Bjorn/Documents/github/student_18_ethcalypso/contracts/WriteRequestHolder.sol",
+    "exportedSymbols": {
+      "WriteRequestHolder": [
+        431
+      ]
+    },
+    "id": 432,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 368,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "absolutePath": "/C/Users/Bjorn/Documents/github/student_18_ethcalypso/contracts/WriteRequest.sol",
+        "file": "./WriteRequest.sol",
+        "id": 369,
+        "nodeType": "ImportDirective",
+        "scope": 432,
+        "sourceUnit": 367,
+        "src": "30:28:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 431,
+        "linearizedBaseContracts": [
+          431
+        ],
+        "name": "WriteRequestHolder",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 372,
+            "name": "holder",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "99:29:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage",
+              "typeString": "contract WriteRequest[]"
+            },
+            "typeName": {
+              "baseType": {
+                "contractScope": null,
+                "id": 370,
+                "name": "WriteRequest",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 366,
+                "src": "99:12:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_contract$_WriteRequest_$366",
+                  "typeString": "contract WriteRequest"
+                }
+              },
+              "id": 371,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "99:14:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage_ptr",
+                "typeString": "contract WriteRequest[]"
+              }
+            },
+            "value": null,
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 376,
+            "name": "wrmap",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "135:45:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+              "typeString": "mapping(bytes32 => contract WriteRequest)"
+            },
+            "typeName": {
+              "id": 375,
+              "keyType": {
+                "id": 373,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "143:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "135:32:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                "typeString": "mapping(bytes32 => contract WriteRequest)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 374,
+                "name": "WriteRequest",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 366,
+                "src": "154:12:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_contract$_WriteRequest_$366",
+                  "typeString": "contract WriteRequest"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 380,
+            "name": "hasRequest",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "187:42:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+              "typeString": "mapping(bytes32 => bool)"
+            },
+            "typeName": {
+              "id": 379,
+              "keyType": {
+                "id": 377,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "195:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "187:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+                "typeString": "mapping(bytes32 => bool)"
+              },
+              "valueType": {
+                "id": 378,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "206:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 409,
+              "nodeType": "Block",
+              "src": "287:122:3",
+              "statements": [
+                {
+                  "assignments": [
+                    386
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 386,
+                      "name": "h",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 410,
+                      "src": "298:9:3",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      },
+                      "typeName": {
+                        "id": 385,
+                        "name": "bytes32",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "298:7:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 390,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 387,
+                        "name": "wr",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 382,
+                        "src": "310:2:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      },
+                      "id": 388,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "getID",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 301,
+                      "src": "310:8:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$__$returns$_t_bytes32_$",
+                        "typeString": "function () external returns (bytes32)"
+                      }
+                    },
+                    "id": 389,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "310:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "298:22:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 395,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "id": 391,
+                        "name": "wrmap",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 376,
+                        "src": "331:5:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                          "typeString": "mapping(bytes32 => contract WriteRequest)"
+                        }
+                      },
+                      "id": 393,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 392,
+                        "name": "h",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 386,
+                        "src": "337:1:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "331:8:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_WriteRequest_$366",
+                        "typeString": "contract WriteRequest"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 394,
+                      "name": "wr",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 382,
+                      "src": "342:2:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_WriteRequest_$366",
+                        "typeString": "contract WriteRequest"
+                      }
+                    },
+                    "src": "331:13:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "id": 396,
+                  "nodeType": "ExpressionStatement",
+                  "src": "331:13:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 401,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "id": 397,
+                        "name": "hasRequest",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 380,
+                        "src": "355:10:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+                          "typeString": "mapping(bytes32 => bool)"
+                        }
+                      },
+                      "id": 399,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 398,
+                        "name": "h",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 386,
+                        "src": "366:1:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "355:13:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "74727565",
+                      "id": 400,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "bool",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "371:4:3",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      },
+                      "value": "true"
+                    },
+                    "src": "355:20:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 402,
+                  "nodeType": "ExpressionStatement",
+                  "src": "355:20:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 406,
+                        "name": "wr",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 382,
+                        "src": "398:2:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 403,
+                        "name": "holder",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 372,
+                        "src": "386:6:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage",
+                          "typeString": "contract WriteRequest[] storage ref"
+                        }
+                      },
+                      "id": 405,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "386:11:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_contract$_WriteRequest_$366_$returns$_t_uint256_$",
+                        "typeString": "function (contract WriteRequest) returns (uint256)"
+                      }
+                    },
+                    "id": 407,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "386:15:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 408,
+                  "nodeType": "ExpressionStatement",
+                  "src": "386:15:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 410,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "addWriteRequest",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 383,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 382,
+                  "name": "wr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 410,
+                  "src": "263:15:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_WriteRequest_$366",
+                    "typeString": "contract WriteRequest"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 381,
+                    "name": "WriteRequest",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 366,
+                    "src": "263:12:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "262:17:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 384,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "287:0:3"
+            },
+            "scope": 431,
+            "src": "238:171:3",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 421,
+              "nodeType": "Block",
+              "src": "487:34:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 417,
+                      "name": "wrmap",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 376,
+                      "src": "505:5:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                        "typeString": "mapping(bytes32 => contract WriteRequest)"
+                      }
+                    },
+                    "id": 419,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 418,
+                      "name": "b",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 412,
+                      "src": "511:1:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "505:8:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "functionReturnParameters": 416,
+                  "id": 420,
+                  "nodeType": "Return",
+                  "src": "498:15:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 422,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRequestByID",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 413,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 412,
+                  "name": "b",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 422,
+                  "src": "441:9:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 411,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "441:7:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "440:11:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 416,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 415,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 422,
+                  "src": "473:12:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_WriteRequest_$366",
+                    "typeString": "contract WriteRequest"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 414,
+                    "name": "WriteRequest",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 366,
+                    "src": "473:12:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "472:14:3"
+            },
+            "scope": 431,
+            "src": "417:104:3",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 429,
+              "nodeType": "Block",
+              "src": "569:30:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "hexValue": "74727565",
+                    "id": 427,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "587:4:3",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "true"
+                  },
+                  "functionReturnParameters": 426,
+                  "id": 428,
+                  "nodeType": "Return",
+                  "src": "580:11:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 430,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "has",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 423,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "539:2:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 426,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 425,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 430,
+                  "src": "563:4:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 424,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "563:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "562:6:3"
+            },
+            "scope": 431,
+            "src": "527:72:3",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 432,
+        "src": "62:540:3"
+      }
+    ],
+    "src": "0:602:3"
+  },
+  "legacyAST": {
+    "absolutePath": "/C/Users/Bjorn/Documents/github/student_18_ethcalypso/contracts/WriteRequestHolder.sol",
+    "exportedSymbols": {
+      "WriteRequestHolder": [
+        431
+      ]
+    },
+    "id": 432,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 368,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:3"
+      },
+      {
+        "absolutePath": "/C/Users/Bjorn/Documents/github/student_18_ethcalypso/contracts/WriteRequest.sol",
+        "file": "./WriteRequest.sol",
+        "id": 369,
+        "nodeType": "ImportDirective",
+        "scope": 432,
+        "sourceUnit": 367,
+        "src": "30:28:3",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 431,
+        "linearizedBaseContracts": [
+          431
+        ],
+        "name": "WriteRequestHolder",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 372,
+            "name": "holder",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "99:29:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage",
+              "typeString": "contract WriteRequest[]"
+            },
+            "typeName": {
+              "baseType": {
+                "contractScope": null,
+                "id": 370,
+                "name": "WriteRequest",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 366,
+                "src": "99:12:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_contract$_WriteRequest_$366",
+                  "typeString": "contract WriteRequest"
+                }
+              },
+              "id": 371,
+              "length": null,
+              "nodeType": "ArrayTypeName",
+              "src": "99:14:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage_ptr",
+                "typeString": "contract WriteRequest[]"
+              }
+            },
+            "value": null,
+            "visibility": "private"
+          },
+          {
+            "constant": false,
+            "id": 376,
+            "name": "wrmap",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "135:45:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+              "typeString": "mapping(bytes32 => contract WriteRequest)"
+            },
+            "typeName": {
+              "id": 375,
+              "keyType": {
+                "id": 373,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "143:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "135:32:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                "typeString": "mapping(bytes32 => contract WriteRequest)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 374,
+                "name": "WriteRequest",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 366,
+                "src": "154:12:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_contract$_WriteRequest_$366",
+                  "typeString": "contract WriteRequest"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 380,
+            "name": "hasRequest",
+            "nodeType": "VariableDeclaration",
+            "scope": 431,
+            "src": "187:42:3",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+              "typeString": "mapping(bytes32 => bool)"
+            },
+            "typeName": {
+              "id": 379,
+              "keyType": {
+                "id": 377,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "195:7:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "187:24:3",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+                "typeString": "mapping(bytes32 => bool)"
+              },
+              "valueType": {
+                "id": 378,
+                "name": "bool",
+                "nodeType": "ElementaryTypeName",
+                "src": "206:4:3",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 409,
+              "nodeType": "Block",
+              "src": "287:122:3",
+              "statements": [
+                {
+                  "assignments": [
+                    386
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 386,
+                      "name": "h",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 410,
+                      "src": "298:9:3",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      },
+                      "typeName": {
+                        "id": 385,
+                        "name": "bytes32",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "298:7:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "value": null,
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 390,
+                  "initialValue": {
+                    "argumentTypes": null,
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 387,
+                        "name": "wr",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 382,
+                        "src": "310:2:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      },
+                      "id": 388,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "getID",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 301,
+                      "src": "310:8:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_external_nonpayable$__$returns$_t_bytes32_$",
+                        "typeString": "function () external returns (bytes32)"
+                      }
+                    },
+                    "id": 389,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "310:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "298:22:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 395,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "id": 391,
+                        "name": "wrmap",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 376,
+                        "src": "331:5:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                          "typeString": "mapping(bytes32 => contract WriteRequest)"
+                        }
+                      },
+                      "id": 393,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 392,
+                        "name": "h",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 386,
+                        "src": "337:1:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "331:8:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_WriteRequest_$366",
+                        "typeString": "contract WriteRequest"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 394,
+                      "name": "wr",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 382,
+                      "src": "342:2:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_WriteRequest_$366",
+                        "typeString": "contract WriteRequest"
+                      }
+                    },
+                    "src": "331:13:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "id": 396,
+                  "nodeType": "ExpressionStatement",
+                  "src": "331:13:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 401,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "id": 397,
+                        "name": "hasRequest",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 380,
+                        "src": "355:10:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_bytes32_$_t_bool_$",
+                          "typeString": "mapping(bytes32 => bool)"
+                        }
+                      },
+                      "id": 399,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 398,
+                        "name": "h",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 386,
+                        "src": "366:1:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "nodeType": "IndexAccess",
+                      "src": "355:13:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "hexValue": "74727565",
+                      "id": 400,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "bool",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "371:4:3",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      },
+                      "value": "true"
+                    },
+                    "src": "355:20:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "id": 402,
+                  "nodeType": "ExpressionStatement",
+                  "src": "355:20:3"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 406,
+                        "name": "wr",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 382,
+                        "src": "398:2:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_contract$_WriteRequest_$366",
+                          "typeString": "contract WriteRequest"
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": null,
+                        "id": 403,
+                        "name": "holder",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 372,
+                        "src": "386:6:3",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_contract$_WriteRequest_$366_$dyn_storage",
+                          "typeString": "contract WriteRequest[] storage ref"
+                        }
+                      },
+                      "id": 405,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "memberName": "push",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": null,
+                      "src": "386:11:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_arraypush_nonpayable$_t_contract$_WriteRequest_$366_$returns$_t_uint256_$",
+                        "typeString": "function (contract WriteRequest) returns (uint256)"
+                      }
+                    },
+                    "id": 407,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "386:15:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "id": 408,
+                  "nodeType": "ExpressionStatement",
+                  "src": "386:15:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 410,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "addWriteRequest",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 383,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 382,
+                  "name": "wr",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 410,
+                  "src": "263:15:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_WriteRequest_$366",
+                    "typeString": "contract WriteRequest"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 381,
+                    "name": "WriteRequest",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 366,
+                    "src": "263:12:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "262:17:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 384,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "287:0:3"
+            },
+            "scope": 431,
+            "src": "238:171:3",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 421,
+              "nodeType": "Block",
+              "src": "487:34:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "baseExpression": {
+                      "argumentTypes": null,
+                      "id": 417,
+                      "name": "wrmap",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 376,
+                      "src": "505:5:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_mapping$_t_bytes32_$_t_contract$_WriteRequest_$366_$",
+                        "typeString": "mapping(bytes32 => contract WriteRequest)"
+                      }
+                    },
+                    "id": 419,
+                    "indexExpression": {
+                      "argumentTypes": null,
+                      "id": 418,
+                      "name": "b",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 412,
+                      "src": "511:1:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "isConstant": false,
+                    "isLValue": true,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "IndexAccess",
+                    "src": "505:8:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "functionReturnParameters": 416,
+                  "id": 420,
+                  "nodeType": "Return",
+                  "src": "498:15:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 422,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "getRequestByID",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 413,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 412,
+                  "name": "b",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 422,
+                  "src": "441:9:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 411,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "441:7:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "440:11:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 416,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 415,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 422,
+                  "src": "473:12:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_WriteRequest_$366",
+                    "typeString": "contract WriteRequest"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 414,
+                    "name": "WriteRequest",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 366,
+                    "src": "473:12:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_contract$_WriteRequest_$366",
+                      "typeString": "contract WriteRequest"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "472:14:3"
+            },
+            "scope": 431,
+            "src": "417:104:3",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 429,
+              "nodeType": "Block",
+              "src": "569:30:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "hexValue": "74727565",
+                    "id": 427,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "587:4:3",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "true"
+                  },
+                  "functionReturnParameters": 426,
+                  "id": 428,
+                  "nodeType": "Return",
+                  "src": "580:11:3"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 430,
+            "implemented": true,
+            "isConstructor": false,
+            "isDeclaredConst": true,
+            "modifiers": [],
+            "name": "has",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 423,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "539:2:3"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 426,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 425,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 430,
+                  "src": "563:4:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 424,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "563:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "562:6:3"
+            },
+            "scope": 431,
+            "src": "527:72:3",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 432,
+        "src": "62:540:3"
+      }
+    ],
+    "src": "0:602:3"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-10-07T14:19:47.594Z"
+}
