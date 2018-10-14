@@ -16,9 +16,7 @@ const interface = json['abi'];
 const bytecode = json['bytecode'];
 
 beforeEach(async () => {
-    console.log('bjorn');
     accounts = await web3.eth.getAccounts();
-    console.log("after accounts");
     const acc1 = accounts[0];
     const acc2 = accounts[1];
     const acc3 = accounts[2];
@@ -29,7 +27,6 @@ beforeEach(async () => {
         data : bytecode,
         arguments : [depAccounts],
     }).send({from : acc1, gas : 1000000})
-    console.log("Deployed");
 });
 
 
