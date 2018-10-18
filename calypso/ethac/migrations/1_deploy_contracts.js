@@ -7,11 +7,6 @@ module.exports = (deployer) => {
     deployCalypso(deployer);
 };
 
-const deployCalypso = async (deployer) => {
-    const accounts = web3.eth.getAccounts();
-    const account0 = accounts[0];
-    const account1 = accounts[1];
-    const account2 = accounts[2];
-    const accs = [account0, account1, account2];
-    deployer.deploy(Calypso, accs);
+const deployCalypso = async (deployer, [owners]) => {
+    deployer.deploy(Calypso, owners);
 }

@@ -5,22 +5,24 @@ import "./WriteRequest.sol";
 
 contract WriteRequestHolder {
 
-    WriteRequest[] private holder;
-    mapping(bytes32 => WriteRequest) public wrmap;
-    mapping(bytes32 => bool) public hasRequest;
+    mapping(address => WriteRequest) public wrmap;
+    mapping(address => bool) public hasRequest;
+    
+    constructor() public {
 
-    function addWriteRequest(WriteRequest wr) public {
-        bytes32 h = wr.getID();
-        wrmap[h] = wr;
-        hasRequest[h] = true;
-        holder.push(wr);
     }
 
-    function getRequestByID(bytes32 b) public view returns (WriteRequest) {
-        return wrmap[b];
+    function addWriteRequest(address a) public {
+        WriteRequest wr = WriteRequest(a);
+        wrmap[a] = wr;
+        hasRequest[a] = true;
     }
 
-    function canRead(bytes32 id) public returns (bool) {
-        return hasRequest[id];
+    function getRequestByID(address a) public view returns (WriteRequest) {
+        return wrmap[a];
+    }
+
+    function canRead(address a) public returns (bool) {
+        return hasRequest[a];
     }
 }

@@ -19,53 +19,41 @@ contract Calypso {
     //This is a mapping that maps the hash of a request to the
     //associated WriteRequest of that hash
     
-    constructor(address[] a) public {
-        owners = new Owners(a);
+    constructor(address a, address holder, address rrholder) public {
+        owners = Owners(a);
+        wrHolder = WriteRequestHolder(holder);
+        rrHolder = ReadRequestHolder(rrholder);
     }
 
     function canWrite(address a) public view returns (bool) {
         return owners.canWrite(a);
     }
 
-    function addWriteRequest(bytes d, bytes ed, bytes l, address[] p) public {
-        require(canWrite(msg.sender), "You are not a registered owner");
-        WriteRequest wr = newWriteRequest(d, ed, l, p);
-        wrHolder.addWriteRequest(wr);
-        hasReq[wr.getID()] = true;
+    function addWriteRequest(address a) public {
+        //require(canWrite(msg.sender), "You are not a registered owner");
+        wrHolder.addWriteRequest(a);
     }
 
-    function getRequestByID(bytes32 b) public view returns (WriteRequest) {
-        WriteRequest wr = wrHolder.getRequestByID(b);
-        return wr;
+    function AddReadRequest(address a) public {
+        ReadRequest rr = ReadRequest(a);
+        address write = rr.writeRequest();
+        require(wrHolder.canRead(write), "There is no corresponding write request");
+        rrHolder.addReadRequest(a);
     }
 
-    function AddReadRequest(ReadRequest rr) public {
-        bytes32 write = rr.writeRequest();
-        require(wrHolder.canRead(write), "There is no corresponding read request");
-        rrHolder.addReadRequest(rr);
-    }
-
-    //This  functions is basically only there for testing purposes.
-    //Passing contracts to truffle or js frameworks is a
-    //pain but this allows me to be able to check if for a
-    //given ID I have stored a contract. This is only used
-    //for testing purposes and will probably not go to
-    //production.
-    function checkIfRequestIsValid(bytes d, bytes ed, bytes l, address[] p) public returns (bool) {
-        WriteRequest wr = newWriteRequest(d, ed, l, p);
-        return hasReq[wr.getID()];
-    }
-
-    function newWriteRequest(bytes d, bytes ed, bytes l, address[] p) public returns (WriteRequest) {
-        WriteRequest wr = new WriteRequest(d, ed, l, p);
-        return wr;
+    function checkIfRequestIsValid(address a) public returns (bool) {
+        return wrHolder.canRead(a);
     }
 
     //This is also purely a testing method. Way too hard to
     //pass a contract as a parameter outside of a solidity contract
-    function getIDOfWriteRequest(bytes d, bytes ed, bytes l, address[] p) public returns (bytes32) {
-        WriteRequest wr = new WriteRequest(d, ed, l, p);
+    function getIDOfWriteRequest(address a) public returns (bytes32) {
+        WriteRequest wr = WriteRequest(a);
         return wr.getID();
+    }
+
+    function isValidReadRequest(address a)  public view returns (bool) {
+        return rrHolder.hasReadRequest(a);
     }
 
 }
