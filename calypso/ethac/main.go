@@ -42,6 +42,7 @@ func main() {
 	fmt.Println("Owners deployed")
 
 	cal, _, _, _ := gocontracts.ServiceCalypso(privateKey, client, owners, addrWR, addrRR)
+	fmt.Println("Calypso deployed at ", cal.Hex())
 	tx, e := gocontracts.ServiceAddWriteRequest(privateKey, cal, addrW, client)
 	if e != nil {
 		log.Fatal(e)

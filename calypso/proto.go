@@ -5,6 +5,7 @@ import (
 	"github.com/dedis/cothority/skipchain"
 	"github.com/dedis/kyber"
 	"github.com/dedis/onet"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 // PROTOSTART
@@ -44,6 +45,8 @@ type Write struct {
 	ExtraData []byte `protobuf:"opt"`
 	// LTSID points to the identity of the lts group
 	LTSID []byte
+
+	ETHAdresses []common.Address
 }
 
 // Read is the data stored in a read instance. It has a pointer to the write
@@ -77,7 +80,7 @@ type CreateLTSReply struct {
 }
 
 // DecryptKey is sent by a reader after he successfully stored a 'Read' request
-// in byzcoin.
+// in byzcoin Client.
 type DecryptKey struct {
 	// Read is the proof that he has been accepted to read the secret.
 	Read byzcoin.Proof
