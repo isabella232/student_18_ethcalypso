@@ -83,7 +83,7 @@ it("Adding a ReadRequest with a corresponding WriteRequest", async () => {
     const owners = [acc1, acc2, acc3, acc4];
     const wr = await CreateWR(d, ed, l, owners);
     const wrAddress = wr.options.address;
-    const rr = await createReadRequest(wrAddress, accounts[0]);
+    const rr = await createReadRequest(wrAddress, d);
     const rrAddress = rr.options.address;
     await Calypso.methods.addWriteRequest(wrAddress).send({from : accounts[1], gas: 4712388});
     await Calypso.methods.AddReadRequest(rrAddress).send({from : accounts[1], gas: 4712388});

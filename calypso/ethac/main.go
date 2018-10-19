@@ -29,8 +29,8 @@ func main() {
 	address3 := common.BytesToAddress([]byte("09E360FeD8580641CE129252417a8646709196f5"))
 	policy := []common.Address{address1, address2, address3}
 
-	addrW, _, _, _ := gocontracts.ServiceDeployWriteRequest(privateKey, client, data, extraData, LTSID, policy)
-	addrR, _, _, _ := gocontracts.ServiceDeployReadRequest(privateKey, client, addrW, address1)
+	addrW, _, _, _ := gocontracts.ServiceDeployWriteRequest(privateKey, client, data, extraData, LTSID, policy, data)
+	addrR, _, _, _ := gocontracts.ServiceDeployReadRequest(privateKey, client, addrW, data)
 	fmt.Println(addrR)
 
 	addrWR, _, _, _ := gocontracts.ServiceDeployWriteRequestHolder(privateKey, client)

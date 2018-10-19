@@ -45,13 +45,6 @@ contract Calypso {
         return wrHolder.canRead(a);
     }
 
-    //This is also purely a testing method. Way too hard to
-    //pass a contract as a parameter outside of a solidity contract
-    function getIDOfWriteRequest(address a) public returns (bytes32) {
-        WriteRequest wr = WriteRequest(a);
-        return wr.getID();
-    }
-
     function isValidReadRequest(address a)  public view returns (bool) {
         return rrHolder.hasReadRequest(a);
     }

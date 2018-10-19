@@ -86,6 +86,14 @@ type DecryptKey struct {
 	Read byzcoin.Proof
 	// Write is the proof containing the write request.
 	Write byzcoin.Proof
+
+	//ETHRead is the address of the deployed contract
+	//on the ethereum blockchain
+	ETHRead common.Address
+
+	//ETHWrite is the address of the deployed
+	//WriteRequest on the ethereum blockchain
+	ETHWrite common.Address
 }
 
 // DecryptKeyReply is returned if the service verified successfully that the

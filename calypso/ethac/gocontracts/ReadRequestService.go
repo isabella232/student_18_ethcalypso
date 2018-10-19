@@ -3,7 +3,6 @@ package gocontracts
 import (
 	"context"
 	"crypto/ecdsa"
-	"fmt"
 	"log"
 	"math/big"
 
@@ -14,7 +13,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployReadRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, writeAddress common.Address, xc common.Address) (common.Address, *types.Transaction, *ReadRequest, error) {
+func ServiceDeployReadRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, writeAddress common.Address, xc []byte) (common.Address, *types.Transaction, *ReadRequest, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
@@ -41,8 +40,5 @@ func ServiceDeployReadRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Cl
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(address.Hex())
-	fmt.Println(tx.Hash().Hex())
 	return address, tx, instance, err
 }

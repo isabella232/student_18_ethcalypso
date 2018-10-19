@@ -2,9 +2,9 @@ pragma solidity ^0.4.24;
 
 contract ReadRequest {
     address public writeRequest;
-    address public xc;
+    bytes public xc;
 
-    constructor(address a, address x) public {
+    constructor(address a, bytes x) public {
         writeRequest = a;
         xc = x;
     }

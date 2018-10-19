@@ -3,7 +3,6 @@ package gocontracts
 import (
 	"context"
 	"crypto/ecdsa"
-	"fmt"
 	"log"
 	"math/big"
 
@@ -14,19 +13,21 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address) (common.Address, *types.Transaction, *WriteRequest, error) {
+func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address, U []byte) (common.Address, *types.Transaction, *WriteRequest, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
 		log.Fatal("error casting public key to ECDSA")
 	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	nonce, err := client.PendingNonceAt(ctx, fromAddress)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	gasPrice, err := client.SuggestGasPrice(context.Background())
+	gasPrice, err := client.SuggestGasPrice(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,12 +38,9 @@ func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.C
 	auth.GasLimit = uint64(4712388) // in units
 	auth.GasPrice = gasPrice
 
-	address, tx, instance, err := DeployWriteRequest(auth, client, d, ed, ltsid, p)
+	address, tx, instance, err := DeployWriteRequest(auth, client, d, ed, ltsid, p, U)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(address.Hex())
-	fmt.Println(tx.Hash().Hex())
 	return address, tx, instance, err
 }
