@@ -3,6 +3,7 @@ package gocontracts
 import (
 	"context"
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
 	"log"
 	"math/big"
@@ -82,22 +83,22 @@ func ServiceAddWriteRequest(privateKey *ecdsa.PrivateKey, cal common.Address, wr
 func ServiceAddReadRequest(privateKey *ecdsa.PrivateKey, cal common.Address, rr common.Address, client *ethclient.Client) (*types.Transaction, error) {
 	calTransActor, e := NewCalypsoTransactor(cal, client)
 	if e != nil {
-		log.Fatal(e)
+		return nil, e
 	}
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Fatal("error casting public key to ECDSA")
+		return nil, errors.New("Could not cast public key to ECDSA")
 	}
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	auth := bind.NewKeyedTransactor(privateKey)
@@ -108,5 +109,4 @@ func ServiceAddReadRequest(privateKey *ecdsa.PrivateKey, cal common.Address, rr 
 	auth.GasPrice = gasPrice
 	tx, e := calTransActor.AddReadRequest(auth, rr)
 	return tx, e
-
 }

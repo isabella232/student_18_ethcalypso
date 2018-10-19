@@ -83,17 +83,9 @@ type CreateLTSReply struct {
 // in byzcoin Client.
 type DecryptKey struct {
 	// Read is the proof that he has been accepted to read the secret.
-	Read byzcoin.Proof
+	Read common.Address
 	// Write is the proof containing the write request.
-	Write byzcoin.Proof
-
-	//ETHRead is the address of the deployed contract
-	//on the ethereum blockchain
-	ETHRead common.Address
-
-	//ETHWrite is the address of the deployed
-	//WriteRequest on the ethereum blockchain
-	ETHWrite common.Address
+	Write common.Address
 }
 
 // DecryptKeyReply is returned if the service verified successfully that the

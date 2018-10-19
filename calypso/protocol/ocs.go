@@ -8,6 +8,7 @@ paper-draft about onchain-secrets (called BlockMage).
 import (
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -97,6 +98,8 @@ func (o *OCS) Start() error {
 		log.Errorf("Some nodes failed with error(s) %v", errs)
 		return errors.New("too many nodes failed in broadcast")
 	}
+	fmt.Println("No errors")
+	o.finish(true)
 	return nil
 }
 

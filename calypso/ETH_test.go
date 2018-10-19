@@ -57,7 +57,7 @@ func TestDeploy_Calypso(t *testing.T) {
 	require.Nil(t, e)
 	fmt.Println("Added read request")
 }
-func getLTS(t *testing.T) (*CreateLTSReply, darc.ID) {
+func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client) {
 	l := onet.NewTCPTest(cothority.Suite)
 	servers, roster, _ := l.GenTree(3, true)
 	l.GetServices(servers, calypsoID)
@@ -79,35 +79,53 @@ func getLTS(t *testing.T) (*CreateLTSReply, darc.ID) {
 	require.Nil(t, err)
 	require.NotNil(t, ltsReply.LTSID)
 	require.NotNil(t, ltsReply.X)
-	return ltsReply, msg.GenesisDarc.BaseID
+	return ltsReply, msg.GenesisDarc.BaseID, calypsoClient
 
 }
 func TestCreateLTS_ETH(t *testing.T) {
-	ltsReply, gDarc := getLTS(t)
+	ltsReply, gDarc, calypsoClient := getLTS(t)
+	if false {
+		fmt.Println(calypsoClient.bcClient)
+	}
 
 	write := NewWrite(cothority.Suite, ltsReply.LTSID, gDarc, ltsReply.X, []byte("I am secret message"))
 	client, e := ethclient.Dial("http://127.0.0.1:7545")
 	defer client.Close()
 	require.Nil(t, e)
-	fmt.Println(write.Data)
 	privateKey, err := crypto.HexToECDSA("1944dae12efeb1b1107dc1f3c7a459a01d865fff1c4b43a26f1755876aa1b820")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(privateKey.X)
 	address1 := common.BytesToAddress([]byte("8A749D6B91C35b8a5Ce812278C73C988a97790aA"))
 	address2 := common.BytesToAddress([]byte("F28B17a7D4Ab334584dF6ebfD70FA59c3527CD1e"))
 	address3 := common.BytesToAddress([]byte("09E360FeD8580641CE129252417a8646709196f5"))
 	policy := []common.Address{address1, address2, address3}
 	write.ETHAdresses = policy
-	data, e := write.U.MarshalBinary()
+	data, e := ltsReply.X.MarshalBinary()
 	require.Nil(t, e)
-	fmt.Println("We hvae this many bytes of data ", len(write.Data))
-	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, data)
-	fmt.Println("Address of deployed contract", addr.Hex())
+	wrData, e := write.U.MarshalBinary()
+	require.Nil(t, e)
+	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData)
 
 	rAddr, _, _, e := gocontracts.ServiceDeployReadRequest(privateKey, client, addr, data)
 	require.Nil(t, e)
-	fmt.Println("Address of the deployed read request is ", rAddr.Hex())
+	WR, e := gocontracts.ServiceGetWriteRequest(privateKey, client, addr)
+	require.Nil(t, e)
+	fmt.Println("The U point is: ", WR.U.String())
+	RR, e := gocontracts.ServiceGetRead(rAddr, client, privateKey)
+	require.Nil(t, e)
+	fmt.Println("The Xc point is ", RR.Xc.String())
+	dkr := &DecryptKey{
+		Read:  rAddr,
+		Write: addr,
+	}
+	dkReply, e := calypsoClient.DecryptKey(dkr)
+	if e != nil {
+		fmt.Println("Sabrina")
+	}
+	require.Nil(t, e)
+	fmt.Println(dkReply.X.String())
+	fmt.Println(ltsReply.X.String())
+	require.True(t, dkReply.X.Equal(ltsReply.X))
 
 }

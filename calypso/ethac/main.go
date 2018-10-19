@@ -53,5 +53,12 @@ func main() {
 		log.Fatal(e)
 	}
 	fmt.Println("Added read request")
-
+	read, e := gocontracts.ServiceGetRead(addrR, client, privateKey)
+	if e != nil {
+		fmt.Println(e.Error())
+		log.Fatal(e)
+	}
+	fmt.Println("Got the Read request: ", read.Write)
+	write, e := gocontracts.ServiceGetWriteRequest(privateKey, client, addrW)
+	fmt.Println("Got the write: ", (*write).Data)
 }

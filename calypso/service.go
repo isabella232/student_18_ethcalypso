@@ -12,11 +12,11 @@ package calypso
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dedis/cothority"
 	"github.com/dedis/cothority/byzcoin"
-	"github.com/dedis/cothority/calypso/protocol"
 	"github.com/dedis/cothority/darc"
 	dkgprotocol "github.com/dedis/cothority/dkg"
 	"github.com/dedis/kyber"
@@ -26,6 +26,10 @@ import (
 	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
 	"github.com/dedis/protobuf"
+	"github.com/dedis/student_18_ethcalypso/calypso/ethac/gocontracts"
+	"github.com/dedis/student_18_ethcalypso/calypso/protocol"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // Used for tests
@@ -107,6 +111,18 @@ func (s *Service) CreateLTS(cl *CreateLTS) (reply *CreateLTSReply, err error) {
 	return
 }
 
+func compare(a, b []byte) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, val := range a {
+		if b[i] != val {
+			return false
+		}
+	}
+	return true
+}
+
 // DecryptKey takes as an input a Read- and a Write-proof. Proofs contain
 // everything necessary to verify that a given instance is correct and
 // stored in ByzCoin.
@@ -115,38 +131,60 @@ func (s *Service) CreateLTS(cl *CreateLTS) (reply *CreateLTSReply, err error) {
 // in the Read-instance.
 // TODO: support ephemeral keys.
 func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error) {
+	client, e := ethclient.Dial("http://127.0.0.1:7545")
+	if e != nil {
+		return nil, e
+	}
+	defer client.Close()
+	from, err := crypto.HexToECDSA("1944dae12efeb1b1107dc1f3c7a459a01d865fff1c4b43a26f1755876aa1b820")
+	if err != nil {
+		return nil, e
+	}
 	reply = &DecryptKeyReply{}
 	log.Lvl2("Re-encrypt the key to the public key of the reader")
+	wAddress := dkr.Write
+	rAddress := dkr.Read
 
-	var read Read
-	if err := dkr.Read.ContractValue(cothority.Suite, ContractReadID, &read); err != nil {
-		return nil, errors.New("didn't get a read instance: " + err.Error())
+	write, e := gocontracts.ServiceGetWriteRequest(from, client, wAddress)
+	if e != nil {
+		return nil, e
 	}
-	var write Write
-	if err := dkr.Write.ContractValue(cothority.Suite, ContractWriteID, &write); err != nil {
-		return nil, errors.New("didn't get a write instance: " + err.Error())
+	read, e := gocontracts.ServiceGetRead(rAddress, client, from)
+	if e != nil {
+		fmt.Println("Read")
+		return nil, e
 	}
-	if !read.Write.Equal(byzcoin.NewInstanceID(dkr.Write.InclusionProof.Key)) {
-		return nil, errors.New("read doesn't point to passed write")
+	if !compare(read.Write.Bytes(), wAddress.Bytes()) {
+		return nil, errors.New("This read did not point to this write")
 	}
+
+	//I'll have to rewrite until here
 	s.storage.Lock()
 	roster := s.storage.Rosters[string(write.LTSID)]
 	if roster == nil {
 		s.storage.Unlock()
 		return nil, errors.New("don't know the LTSID stored in write")
 	}
+
+	fmt.Println("Got the roster")
+	//I don't think I'll use this
 	scID := make([]byte, 32)
 	copy(scID, s.storage.OLIDs[string(write.LTSID)])
 	s.storage.Unlock()
+
+	/*From here
 	if err = dkr.Read.Verify(scID); err != nil {
 		return nil, errors.New("read proof cannot be verified to come from scID: " + err.Error())
 	}
 	if err = dkr.Write.Verify(scID); err != nil {
 		return nil, errors.New("write proof cannot be verified to come from scID: " + err.Error())
 	}
+	To here I think I can not perform currently.
+	*/
 
 	// Start ocs-protocol to re-encrypt the file's symmetric key under the
 	// reader's public key.
+	fmt.Println("Bjorn")
 	nodes := len(roster.List)
 	threshold := nodes - (nodes-1)/3
 	tree := roster.GenerateNaryTreeWithRoot(nodes, s.ServerIdentity())
@@ -155,23 +193,31 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, err
 	}
 	ocsProto := pi.(*protocol.OCS)
+	//I'll need U. I have U.
 	ocsProto.U = write.U
-	verificationData := &vData{
+
+	//Remove this
+	/*verificationData := &vData{
 		Proof: dkr.Read,
-	}
+	}*/
+	//
+
+	//I'll need Xc. I don't know what Xc is yet.
 	ocsProto.Xc = read.Xc
 	log.Lvlf2("Public key is: %s", ocsProto.Xc)
-	ocsProto.VerificationData, err = protobuf.Encode(verificationData)
+	/*ocsProto.VerificationData, err = protobuf.Encode(verificationData)
 	if err != nil {
 		return nil, errors.New("couldn't marshal verification data: " + err.Error())
-	}
+	}*/
 
 	// Make sure everything used from the s.Storage structure is copied, so
 	// there will be no races.
+	fmt.Println("managed to read XC")
 	s.storage.Lock()
 	ocsProto.Shared = s.storage.Shared[string(write.LTSID)]
 	pp := s.storage.Polys[string(write.LTSID)]
 	reply.X = s.storage.Shared[string(write.LTSID)].X.Clone()
+	fmt.Println("Adding to reply")
 	var commits []kyber.Point
 	for _, c := range pp.Commits {
 		commits = append(commits, c.Clone())
@@ -186,15 +232,17 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, err
 	}
 	if !<-ocsProto.Reencrypted {
+		fmt.Println("Bjorn")
 		return nil, errors.New("reencryption got refused")
 	}
+	fmt.Println("Reencrypted")
 	log.Lvl3("Reencryption protocol is done.")
-	reply.XhatEnc, err = share.RecoverCommit(cothority.Suite, ocsProto.Uis,
-		threshold, nodes)
-	if err != nil {
+	reply.XhatEnc, _ = share.RecoverCommit(cothority.Suite, ocsProto.Uis, threshold, nodes)
+	fmt.Println("Xhat?")
+	/*if err != nil {
 		return nil, err
-	}
-	reply.Cs = write.Cs
+	}*/
+	//reply.Cs = write.Cs
 	log.Lvl3("Successfully reencrypted the key")
 	return
 }
