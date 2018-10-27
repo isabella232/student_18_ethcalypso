@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"errors"
-	"fmt"
 	"log"
 	"math/big"
 
@@ -38,13 +37,10 @@ func ServiceCalypso(privateKey *ecdsa.PrivateKey, client *ethclient.Client, owne
 	auth.GasLimit = uint64(4712388) // in units
 	auth.GasPrice = gasPrice
 
-	address, tx, instance, err := DeployCalypso(auth, client, owners, wrHolder, rrHolder)
+	address, tx, instance, err := DeployCalypso(auth, client, wrHolder, rrHolder, owners)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(address.Hex())
-	fmt.Println(tx.Hash().Hex())
 	return address, tx, instance, err
 }
 
