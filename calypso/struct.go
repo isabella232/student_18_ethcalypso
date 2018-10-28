@@ -3,6 +3,7 @@ package calypso
 import (
 	"crypto/sha256"
 	"errors"
+	"fmt"
 
 	"github.com/dedis/cothority/darc"
 	"github.com/dedis/kyber"
@@ -175,9 +176,11 @@ func DecodeKey(suite kyber.Group, X kyber.Point, Cs []kyber.Point, XhatEnc kyber
 		keyPart, err := keyPointHat.Data()
 		log.Lvl4("keyPart:", keyPart)
 		if err != nil {
+			fmt.Println("Here I stop", keyPointHat)
 			return nil, err
 		}
 		key = append(key, keyPart...)
 	}
+	fmt.Println("hmmm")
 	return
 }

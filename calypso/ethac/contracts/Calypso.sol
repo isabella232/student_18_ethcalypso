@@ -8,29 +8,29 @@ import "./ReadRequestHolder.sol";
 
 
 contract Calypso {
-
     Owners private owners;
     WriteRequestHolder private wrHolder;
     mapping(bytes32 => bool) hasReq;
     ReadRequestHolder private rrHolder;
+    mapping(address => bool) public  ownersMap;
 
 
     //The addresses of the owners of the contract
     //This is a mapping that maps the hash of a request to the
     //associated WriteRequest of that hash
     
-    constructor(address a, address holder, address rrholder) public {
-        owners = Owners(a);
+    function Calypso(address holder, address rrholder, address o) public {
+        owners = Owners(o);
         wrHolder = WriteRequestHolder(holder);
         rrHolder = ReadRequestHolder(rrholder);
     }
 
     function canWrite(address a) public view returns (bool) {
-        return owners.canWrite(a);
+        return ownersMap[a];
     }
 
     function addWriteRequest(address a) public {
-        //require(canWrite(msg.sender), "You are not a registered owner");
+        require(canWrite(msg.sender), "You are not a registered owner");
         wrHolder.addWriteRequest(a);
     }
 
@@ -39,6 +39,11 @@ contract Calypso {
         address write = rr.writeRequest();
         require(wrHolder.canRead(write), "There is no corresponding write request");
         rrHolder.addReadRequest(a);
+    }
+
+    function AddOwner(address a) public {
+        //require(canWrite(msg.sender), "You are not one of the original owners");
+        ownersMap[a] = true;
     }
 
     function checkIfRequestIsValid(address a) public returns (bool) {

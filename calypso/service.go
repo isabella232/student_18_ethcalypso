@@ -10,7 +10,6 @@
 package calypso
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"time"
@@ -28,6 +27,7 @@ import (
 	"github.com/dedis/protobuf"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethac/gocontracts"
 	"github.com/dedis/student_18_ethcalypso/calypso/protocol"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
@@ -64,9 +64,9 @@ type pubPoly struct {
 // is non-nil, Signature needs to hold a valid signature from the reader
 // in the Proof.
 type vData struct {
-	Proof     byzcoin.Proof
-	Ephemeral kyber.Point
-	Signature *darc.Signature
+	ETHReadAddress common.Address
+	Ephemeral      kyber.Point
+	Signature      *darc.Signature
 }
 
 // CreateLTS takes as input a roster with a list of all nodes that should
@@ -166,7 +166,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, errors.New("don't know the LTSID stored in write")
 	}
 
-	fmt.Println("Got the roster")
 	//I don't think I'll use this
 	scID := make([]byte, 32)
 	copy(scID, s.storage.OLIDs[string(write.LTSID)])
@@ -184,8 +183,8 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 
 	// Start ocs-protocol to re-encrypt the file's symmetric key under the
 	// reader's public key.
-	fmt.Println("Bjorn")
 	nodes := len(roster.List)
+	fmt.Println("Nodes", nodes)
 	threshold := nodes - (nodes-1)/3
 	tree := roster.GenerateNaryTreeWithRoot(nodes, s.ServerIdentity())
 	pi, err := s.CreateProtocol(protocol.NameOCS, tree)
@@ -196,28 +195,23 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	//I'll need U. I have U.
 	ocsProto.U = write.U
 
-	//Remove this
-	/*verificationData := &vData{
-		Proof: dkr.Read,
-	}*/
-	//
+	verificationData := &vData{
+		ETHReadAddress: dkr.Read,
+	}
 
-	//I'll need Xc. I don't know what Xc is yet.
 	ocsProto.Xc = read.Xc
 	log.Lvlf2("Public key is: %s", ocsProto.Xc)
-	/*ocsProto.VerificationData, err = protobuf.Encode(verificationData)
+	ocsProto.VerificationData, err = protobuf.Encode(verificationData)
 	if err != nil {
 		return nil, errors.New("couldn't marshal verification data: " + err.Error())
-	}*/
+	}
 
 	// Make sure everything used from the s.Storage structure is copied, so
 	// there will be no races.
-	fmt.Println("managed to read XC")
 	s.storage.Lock()
 	ocsProto.Shared = s.storage.Shared[string(write.LTSID)]
 	pp := s.storage.Polys[string(write.LTSID)]
 	reply.X = s.storage.Shared[string(write.LTSID)].X.Clone()
-	fmt.Println("Adding to reply")
 	var commits []kyber.Point
 	for _, c := range pp.Commits {
 		commits = append(commits, c.Clone())
@@ -232,17 +226,17 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, err
 	}
 	if !<-ocsProto.Reencrypted {
-		fmt.Println("Bjorn")
 		return nil, errors.New("reencryption got refused")
 	}
-	fmt.Println("Reencrypted")
 	log.Lvl3("Reencryption protocol is done.")
+	fmt.Println("ocsProto uis", ocsProto.Uis)
+	fmt.Println("threshold and nodes", threshold, nodes)
 	reply.XhatEnc, _ = share.RecoverCommit(cothority.Suite, ocsProto.Uis, threshold, nodes)
-	fmt.Println("Xhat?")
-	/*if err != nil {
+	if err != nil {
 		return nil, err
-	}*/
-	//reply.Cs = write.Cs
+	}
+	fmt.Println("The write cs", write.Cs)
+	reply.Cs = write.Cs
 	log.Lvl3("Successfully reencrypted the key")
 	return
 }
@@ -305,22 +299,22 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 // verifyReencryption checks that the read and the write instances match.
 func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
 	err := func() error {
+		privateKey, e := crypto.HexToECDSA("1944dae12efeb1b1107dc1f3c7a459a01d865fff1c4b43a26f1755876aa1b820")
+		if e != nil {
+			return e
+		}
+		client, e := ethclient.Dial("http://127.0.0.1:7545")
+		if e != nil {
+			return nil
+		}
 		var verificationData vData
-		err := protobuf.DecodeWithConstructors(*rc.VerificationData, &verificationData, network.DefaultConstructors(cothority.Suite))
-		if err != nil {
-			return err
+		e = protobuf.DecodeWithConstructors(*rc.VerificationData, &verificationData, network.DefaultConstructors(cothority.Suite))
+		if e != nil {
+			return e
 		}
-		_, vs, err := verificationData.Proof.KeyValue()
-		if err != nil {
-			return errors.New("proof cannot return values: " + err.Error())
-		}
-		if bytes.Compare(vs[1], []byte(ContractReadID)) != 0 {
-			return errors.New("proof doesn't point to read instance")
-		}
-		var r Read
-		err = protobuf.DecodeWithConstructors(vs[0], &r, network.DefaultConstructors(cothority.Suite))
-		if err != nil {
-			return errors.New("couldn't decode read data: " + err.Error())
+		r, e := gocontracts.ServiceGetRead(verificationData.ETHReadAddress, client, privateKey)
+		if e != nil {
+			return e
 		}
 		if verificationData.Ephemeral != nil {
 			return errors.New("ephemeral keys not supported yet")

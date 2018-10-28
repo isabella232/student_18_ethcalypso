@@ -5,11 +5,8 @@ contract Owners {
     address[] private owners;
     mapping(address => bool) private ownersMap;
 
-    constructor(address[] a) public {
-        owners = a;
-        for(uint32 i = 0; i < a.length;i++) {
-            ownersMap[a[i]] = true;
-        }
+    constructor() public {
+        
     }
 
     function getNrOwners() public view returns (uint256) {
@@ -18,5 +15,9 @@ contract Owners {
 
     function canWrite(address a) public view returns (bool) {
         return ownersMap[a];
+    }
+
+    function AddOwner(address a) public {
+        ownersMap[a] = true;
     }
 }
