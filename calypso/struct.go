@@ -3,7 +3,6 @@ package calypso
 import (
 	"crypto/sha256"
 	"errors"
-	"fmt"
 
 	"github.com/dedis/cothority/darc"
 	"github.com/dedis/kyber"
@@ -154,33 +153,31 @@ func EncodeKey(suite suites.Suite, X kyber.Point, key []byte) (U kyber.Point, Cs
 //   - err - an eventual error when trying to recover the data from the points
 func DecodeKey(suite kyber.Group, X kyber.Point, Cs []kyber.Point, XhatEnc kyber.Point,
 	xc kyber.Scalar) (key []byte, err error) {
-	log.Lvl4("xc:", xc)
+	log.LLvl4("xc:", xc)
 	xcInv := suite.Scalar().Neg(xc)
-	log.Lvl4("xcInv:", xcInv)
+	log.LLvl4("xcInv:", xcInv)
 	sum := suite.Scalar().Add(xc, xcInv)
-	log.Lvl4("xc + xcInv:", sum, "::", xc)
-	log.Lvl4("X:", X)
+	log.LLvl4("xc + xcInv:", sum, "::", xc)
+	log.LLvl4("X:", X)
 	XhatDec := suite.Point().Mul(xcInv, X)
-	log.Lvl4("XhatDec:", XhatDec)
-	log.Lvl4("XhatEnc:", XhatEnc)
+	log.LLvl4("XhatDec:", XhatDec)
+	log.LLvl4("XhatEnc:", XhatEnc)
 	Xhat := suite.Point().Add(XhatEnc, XhatDec)
-	log.Lvl4("Xhat:", Xhat)
+	log.LLvl4("Xhat:", Xhat)
 	XhatInv := suite.Point().Neg(Xhat)
-	log.Lvl4("XhatInv:", XhatInv)
+	log.LLvl4("XhatInv:", XhatInv)
 
 	// Decrypt Cs to keyPointHat
 	for _, C := range Cs {
-		log.Lvl4("C:", C)
+		log.LLvl4("C:", C)
 		keyPointHat := suite.Point().Add(C, XhatInv)
-		log.Lvl4("keyPointHat:", keyPointHat)
+		log.LLvl4("keyPointHat:", keyPointHat)
 		keyPart, err := keyPointHat.Data()
-		log.Lvl4("keyPart:", keyPart)
+		log.LLvl4("keyPart:", keyPart)
 		if err != nil {
-			fmt.Println("Here I stop", keyPointHat)
 			return nil, err
 		}
 		key = append(key, keyPart...)
 	}
-	fmt.Println("hmmm")
 	return
 }

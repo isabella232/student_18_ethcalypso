@@ -26,6 +26,7 @@ import (
 	"github.com/dedis/onet/network"
 	"github.com/dedis/protobuf"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethac/gocontracts"
+	"github.com/dedis/student_18_ethcalypso/calypso/ethereum"
 	"github.com/dedis/student_18_ethcalypso/calypso/protocol"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -131,6 +132,10 @@ func compare(a, b []byte) bool {
 // in the Read-instance.
 // TODO: support ephemeral keys.
 func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error) {
+	privateKey, e := ethereum.GetPrivateKey()
+	if e != nil {
+		return nil, e
+	}
 	client, e := ethclient.Dial("http://127.0.0.1:7545")
 	if e != nil {
 		return nil, e
@@ -157,7 +162,16 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	if !compare(read.Write.Bytes(), wAddress.Bytes()) {
 		return nil, errors.New("This read did not point to this write")
 	}
-
+	c, e := gocontracts.GetStaticCalypso()
+	if e != nil {
+		return nil, e
+	}
+	cal := *c
+	canRead := gocontracts.ServiceCheckIfCanRead(privateKey, cal, rAddress, client)
+	fmt.Println("Checked if I can read")
+	if !canRead {
+		return nil, errors.New("This is not a valid read/write pair")
+	}
 	//I'll have to rewrite until here
 	s.storage.Lock()
 	roster := s.storage.Rosters[string(write.LTSID)]
@@ -184,7 +198,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	// Start ocs-protocol to re-encrypt the file's symmetric key under the
 	// reader's public key.
 	nodes := len(roster.List)
-	fmt.Println("Nodes", nodes)
 	threshold := nodes - (nodes-1)/3
 	tree := roster.GenerateNaryTreeWithRoot(nodes, s.ServerIdentity())
 	pi, err := s.CreateProtocol(protocol.NameOCS, tree)
@@ -193,6 +206,7 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	}
 	ocsProto := pi.(*protocol.OCS)
 	//I'll need U. I have U.
+	fmt.Println("WRite U", write.U)
 	ocsProto.U = write.U
 
 	verificationData := &vData{
@@ -229,13 +243,10 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, errors.New("reencryption got refused")
 	}
 	log.Lvl3("Reencryption protocol is done.")
-	fmt.Println("ocsProto uis", ocsProto.Uis)
-	fmt.Println("threshold and nodes", threshold, nodes)
 	reply.XhatEnc, _ = share.RecoverCommit(cothority.Suite, ocsProto.Uis, threshold, nodes)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("The write cs", write.Cs)
 	reply.Cs = write.Cs
 	log.Lvl3("Successfully reencrypted the key")
 	return
@@ -299,11 +310,11 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 // verifyReencryption checks that the read and the write instances match.
 func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
 	err := func() error {
-		privateKey, e := crypto.HexToECDSA("1944dae12efeb1b1107dc1f3c7a459a01d865fff1c4b43a26f1755876aa1b820")
+		privateKey, e := ethereum.GetPrivateKey()
 		if e != nil {
 			return e
 		}
-		client, e := ethclient.Dial("http://127.0.0.1:7545")
+		client, e := ethereum.GetClient()
 		if e != nil {
 			return nil
 		}

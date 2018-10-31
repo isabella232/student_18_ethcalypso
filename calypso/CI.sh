@@ -11,11 +11,7 @@ npm install -g ganache-cli
 
 npm install -g mocha
 
-npm install -g web3@1.0.0-beta.36
-
 go get -u ./...
-
-
 
 cd $HOME/go/src/github.com/ethereum/go-ethereum ; make
 

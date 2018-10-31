@@ -106,3 +106,16 @@ func ServiceAddReadRequest(privateKey *ecdsa.PrivateKey, cal common.Address, rr 
 	tx, e := calTransActor.AddReadRequest(auth, rr)
 	return tx, e
 }
+
+func ServiceCheckIfCanRead(privateKey *ecdsa.PrivateKey, cal common.Address, rr common.Address, client *ethclient.Client) bool {
+	call, e := CreateCallOpts(context.Background(), privateKey, client)
+	if e != nil {
+		return false
+	}
+	calypsoCaller, e := NewCalypsoCaller(cal, client)
+	canRead, e := calypsoCaller.IsValidReadRequest(call, rr)
+	if e != nil {
+		return false
+	}
+	return canRead
+}

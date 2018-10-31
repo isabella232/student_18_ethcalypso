@@ -8,6 +8,7 @@ paper-draft about onchain-secrets (called BlockMage).
 import (
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -128,6 +129,7 @@ func (o *OCS) reencrypt(r structReencrypt) error {
 	hiHat.MarshalTo(hash)
 	ei := cothority.Suite.Scalar().SetBytes(hash.Sum(nil))
 
+	fmt.Println("Bjorn is sending to parent")
 	return o.SendToParent(&ReencryptReply{
 		Ui: ui,
 		Ei: ei,
@@ -193,6 +195,7 @@ func (o *OCS) reencryptReply(rr structReencryptReply) error {
 }
 
 func (o *OCS) getUI(U, Xc kyber.Point) (*share.PubShare, error) {
+	log.Print(o.ServerIdentity(), o.Shared.V, Xc, U)
 	v := cothority.Suite.Point().Mul(o.Shared.V, U)
 	v.Add(v, cothority.Suite.Point().Mul(o.Shared.V, Xc))
 	return &share.PubShare{
