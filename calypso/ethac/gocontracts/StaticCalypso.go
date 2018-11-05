@@ -11,11 +11,12 @@ var calypsoAddr *common.Address
 var calypsoError error
 
 func init() {
+	c := common.HexToAddress("0x86D3Fb6137e53664Eb7ff0e272fCB6eeb2BBC846")
+	calypsoAddr = &c
 	if calypsoAddr != nil {
 		fmt.Println("whaddup")
 		return
 	}
-	fmt.Println("Is it always nil")
 	policy := ethereum.GetTestListOfAddresses()
 	privateKey, e := ethereum.GetPrivateKey()
 	if e != nil {

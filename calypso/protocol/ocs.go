@@ -93,6 +93,7 @@ func (o *OCS) Start() error {
 		log.Lvl1("OCS protocol timeout")
 		o.finish(false)
 	})
+	fmt.Println("I am broadcasting")
 	errs := o.Broadcast(rc)
 	if len(errs) > (len(o.Roster().List)-1)/3 {
 		log.Errorf("Some nodes failed with error(s) %v", errs)

@@ -5,41 +5,19 @@ import (
 	"crypto/ecdsa"
 	"fmt"
 	"log"
-	"math/big"
 
 	"github.com/dedis/cothority"
 	"github.com/dedis/kyber"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address, U []byte, cs [][]byte) (common.Address, *types.Transaction, *WriteRequest, error) {
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		log.Fatal("error casting public key to ECDSA")
+	auth, e := GetAuth(privateKey, client)
+	if e != nil {
+		log.Fatal(e)
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := client.PendingNonceAt(ctx, fromAddress)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	gasPrice, err := client.SuggestGasPrice(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	auth := bind.NewKeyedTransactor(privateKey)
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = uint64(4712388) // in units
-	auth.GasPrice = gasPrice
 	temp := make([]byte, 0)
 	for j := 0; j < len(cs); j++ {
 		temp = append(temp, cs[j]...)
@@ -48,6 +26,7 @@ func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.C
 	if err != nil {
 		log.Fatal(err)
 	}
+	WaitForTransAction(tx, client, 1)
 	return address, tx, instance, err
 }
 

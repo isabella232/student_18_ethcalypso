@@ -2,7 +2,6 @@ package calypso
 
 import (
 	"github.com/dedis/cothority/byzcoin"
-	"github.com/dedis/cothority/skipchain"
 	"github.com/dedis/kyber"
 	"github.com/dedis/onet"
 	"github.com/ethereum/go-ethereum/common"
@@ -65,7 +64,7 @@ type CreateLTS struct {
 	// Roster is the list of nodes that should participate in the DKG.
 	Roster onet.Roster
 	// BCID is the ID of the ByzCoin ledger that can use this LTS.
-	BCID skipchain.SkipBlockID
+	//BCID skipchain.SkipBlockID
 }
 
 // CreateLTSReply is returned upon successfully setting up the distributed

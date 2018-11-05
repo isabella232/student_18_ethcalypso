@@ -29,8 +29,6 @@ import (
 	"github.com/dedis/student_18_ethcalypso/calypso/ethereum"
 	"github.com/dedis/student_18_ethcalypso/calypso/protocol"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 // Used for tests
@@ -43,8 +41,12 @@ var ServiceName = "Calypso"
 const propagationTimeout = 10 * time.Second
 
 func init() {
+	fmt.Println("I entered the init of service student")
 	var err error
 	calypsoID, err = onet.RegisterNewService(ServiceName, newService)
+	if err != nil {
+		fmt.Println("Error in service student")
+	}
 	log.ErrFatal(err)
 	network.RegisterMessages(&storage1{}, &vData{})
 }
@@ -103,7 +105,7 @@ func (s *Service) CreateLTS(cl *CreateLTS) (reply *CreateLTSReply, err error) {
 		}
 		s.storage.Polys[string(reply.LTSID)] = &pubPoly{s.Suite().Point().Base(), dks.Commits}
 		s.storage.Rosters[string(reply.LTSID)] = &cl.Roster
-		s.storage.OLIDs[string(reply.LTSID)] = cl.BCID
+		//s.storage.OLIDs[string(reply.LTSID)] = cl.BCID
 		s.storage.Unlock()
 		reply.X = shared.X
 	case <-time.After(propagationTimeout):
@@ -136,13 +138,8 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	if e != nil {
 		return nil, e
 	}
-	client, e := ethclient.Dial("http://127.0.0.1:7545")
+	client, e := ethereum.GetClient()
 	if e != nil {
-		return nil, e
-	}
-	defer client.Close()
-	from, err := crypto.HexToECDSA("1944dae12efeb1b1107dc1f3c7a459a01d865fff1c4b43a26f1755876aa1b820")
-	if err != nil {
 		return nil, e
 	}
 	reply = &DecryptKeyReply{}
@@ -150,11 +147,11 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	wAddress := dkr.Write
 	rAddress := dkr.Read
 
-	write, e := gocontracts.ServiceGetWriteRequest(from, client, wAddress)
+	write, e := gocontracts.ServiceGetWriteRequest(privateKey, client, wAddress)
 	if e != nil {
 		return nil, e
 	}
-	read, e := gocontracts.ServiceGetRead(rAddress, client, from)
+	read, e := gocontracts.ServiceGetRead(rAddress, client, privateKey)
 	if e != nil {
 		fmt.Println("Read")
 		return nil, e
@@ -185,16 +182,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	copy(scID, s.storage.OLIDs[string(write.LTSID)])
 	s.storage.Unlock()
 
-	/*From here
-	if err = dkr.Read.Verify(scID); err != nil {
-		return nil, errors.New("read proof cannot be verified to come from scID: " + err.Error())
-	}
-	if err = dkr.Write.Verify(scID); err != nil {
-		return nil, errors.New("write proof cannot be verified to come from scID: " + err.Error())
-	}
-	To here I think I can not perform currently.
-	*/
-
 	// Start ocs-protocol to re-encrypt the file's symmetric key under the
 	// reader's public key.
 	nodes := len(roster.List)
@@ -224,6 +211,7 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	// there will be no races.
 	s.storage.Lock()
 	ocsProto.Shared = s.storage.Shared[string(write.LTSID)]
+	fmt.Println("Got the shared")
 	pp := s.storage.Polys[string(write.LTSID)]
 	reply.X = s.storage.Shared[string(write.LTSID)].X.Clone()
 	var commits []kyber.Point
@@ -235,6 +223,7 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 
 	log.Lvl3("Starting reencryption protocol")
 	ocsProto.SetConfig(&onet.GenericConfig{Data: write.LTSID})
+	fmt.Println("I am starting the start protocol")
 	err = ocsProto.Start()
 	if err != nil {
 		return nil, err
@@ -309,6 +298,7 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 
 // verifyReencryption checks that the read and the write instances match.
 func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
+	fmt.Println("BJORN BJORN BJORN BJORN")
 	err := func() error {
 		privateKey, e := ethereum.GetPrivateKey()
 		if e != nil {

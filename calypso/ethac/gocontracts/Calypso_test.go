@@ -25,6 +25,7 @@ func TestAddAWriteRequest(t *testing.T) {
 	policy := ethereum.GetTestListOfAddresses()
 	addr, _, _, e := ServiceDeployWriteRequest(privateKey, client, data, ed, ltsid, policy, u, cs)
 	require.Nil(t, e)
+	fmt.Println("Address of write ", addr)
 	//Now we check that it got deployed
 	wr, e := ServiceGetWriteRequest(privateKey, client, addr)
 	require.Nil(t, e)
@@ -33,6 +34,7 @@ func TestAddAWriteRequest(t *testing.T) {
 	//Check that we still have the same points
 	require.True(t, wr.U.Equal(point))
 }
+
 func TestEmptyCalypso(t *testing.T) {
 	a, e := GetStaticCalypso()
 	fmt.Println("Address of claypso", (*a).Hex())
@@ -63,7 +65,6 @@ func TestAddReadRequestToCalypso(t *testing.T) {
 	fakeAddr, _, _, e := ServiceDeployReadRequest(privateKey, client, policy[0], Xc)
 	require.Nil(t, e)
 	_, e = ServiceAddReadRequest(privateKey, *calypsoAddr, fakeAddr, client)
-	fmt.Println("Address of Calypso", (*calypsoAddr).Hex())
 	require.NotNil(t, e)
 	//Now to make try and make a transaction to the blockchain while not being a registered owner
 	fakePrivateKey, e := ethereum.GetAnotherPrivateKey()

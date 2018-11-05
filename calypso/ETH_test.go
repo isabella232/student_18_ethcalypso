@@ -8,7 +8,6 @@ import (
 	"github.com/dedis/cothority"
 	"github.com/dedis/cothority/byzcoin"
 	"github.com/dedis/cothority/darc"
-	"github.com/dedis/cothority/darc/expression"
 	"github.com/dedis/onet"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethac/gocontracts"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethereum"
@@ -30,10 +29,10 @@ func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
 	d := msg.GenesisDarc
 	require.Nil(t, d.Verify(true))
 	//Create Ledger
-	c, _, err := byzcoin.NewLedger(msg, false)
+	//c, _, err := byzcoin.NewLedger(msg, false)
 	require.Nil(t, err)
 	//Create a Calypso Client (Byzcoin + Onet)
-	calypsoClient := NewClient(c)
+	calypsoClient := NewClient(*roster)
 	//Invoke CreateLTS
 	ltsReply, err := calypsoClient.CreateLTS()
 	calypsoClient.ltsReply = ltsReply
@@ -43,13 +42,9 @@ func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
 	darc1 := darc.NewDarc(darc.InitRules([]darc.Identity{provider1.Identity()},
 		[]darc.Identity{provider1.Identity()}), []byte("Provider1"))
 	// provider1 is the owner, while reader1 is allowed to do read
-	darc1.Rules.AddRule(darc.Action("spawn:"+ContractWriteID),
-		expression.InitOrExpr(provider1.Identity().String()))
-	darc1.Rules.AddRule(darc.Action("spawn:"+ContractReadID),
-		expression.InitOrExpr(reader1.Identity().String()))
 	require.NotNil(t, darc1)
-	_, err = calypsoClient.SpawnDarc(signer, d, *darc1, 10)
-	require.Nil(t, err)
+	//_, err = calypsoClient.SpawnDarc(signer, d, *darc1, 10)
+	//require.Nil(t, err)
 	return ltsReply, darc1.GetBaseID(), calypsoClient, &reader1
 
 }
@@ -77,6 +72,7 @@ func TestCreateLTS_ETH(t *testing.T) {
 	require.Nil(t, e)
 	rAddr, _, _, e := gocontracts.ServiceDeployReadRequest(privateKey, client, addr, data)
 	require.Nil(t, e)
+	fmt.Println("Read address ", rAddr)
 	cal, e := gocontracts.GetStaticCalypso()
 	require.Nil(t, e)
 	calypsoAddr := *cal
@@ -87,7 +83,6 @@ func TestCreateLTS_ETH(t *testing.T) {
 	wr, e := gocontracts.ServiceGetWriteRequest(privateKey, client, addr)
 	require.Nil(t, e)
 	require.True(t, wr.U.Equal(write.U))
-	fmt.Println("U is the same")
 	_, e = gocontracts.ServiceGetRead(rAddr, client, privateKey)
 	require.Nil(t, e)
 	dkr := &DecryptKey{
