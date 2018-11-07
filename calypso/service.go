@@ -211,7 +211,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	// there will be no races.
 	s.storage.Lock()
 	ocsProto.Shared = s.storage.Shared[string(write.LTSID)]
-	fmt.Println("Got the shared")
 	pp := s.storage.Polys[string(write.LTSID)]
 	reply.X = s.storage.Shared[string(write.LTSID)].X.Clone()
 	var commits []kyber.Point
