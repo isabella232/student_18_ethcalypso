@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/dedis/cothority"
-	"github.com/dedis/cothority/byzcoin"
 	"github.com/dedis/cothority/darc"
 	dkgprotocol "github.com/dedis/cothority/dkg"
 	"github.com/dedis/kyber"
@@ -342,8 +341,8 @@ func newService(c *onet.Context) (onet.Service, error) {
 	if err := s.RegisterHandlers(s.CreateLTS, s.DecryptKey, s.SharedPublic); err != nil {
 		return nil, errors.New("couldn't register messages")
 	}
-	byzcoin.RegisterContract(c, ContractWriteID, s.ContractWrite)
-	byzcoin.RegisterContract(c, ContractReadID, s.ContractRead)
+	//byzcoin.RegisterContract(c, ContractWriteID, s.ContractWrite)
+	//byzcoin.RegisterContract(c, ContractReadID, s.ContractRead)
 	if err := s.tryLoad(); err != nil {
 		log.Error(err)
 		return nil, err

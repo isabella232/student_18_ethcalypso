@@ -1,6 +1,7 @@
 package calypso
 
 import (
+	"crypto/ecdsa"
 	"fmt"
 	"testing"
 	"time"
@@ -11,10 +12,11 @@ import (
 	"github.com/dedis/onet"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethac/gocontracts"
 	"github.com/dedis/student_18_ethcalypso/calypso/ethereum"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/stretchr/testify/require"
 )
 
-func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
+func getLTS(t *testing.T, cal common.Address, privateKey *ecdsa.PrivateKey) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
 	l := onet.NewTCPTest(cothority.Suite)
 	servers, roster, _ := l.GenTree(3, true)
 	l.GetServices(servers, calypsoID)
@@ -32,9 +34,9 @@ func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
 	//c, _, err := byzcoin.NewLedger(msg, false)
 	require.Nil(t, err)
 	//Create a Calypso Client (Byzcoin + Onet)
-	calypsoClient := NewClient(*roster)
+	calypsoClient := NewClient(*roster, privateKey)
 	//Invoke CreateLTS
-	ltsReply, err := calypsoClient.CreateLTS()
+	ltsReply, err := calypsoClient.CreateLTS(cal)
 	calypsoClient.ltsReply = ltsReply
 	require.Nil(t, err)
 	require.NotNil(t, ltsReply.LTSID)
@@ -49,12 +51,14 @@ func getLTS(t *testing.T) (*CreateLTSReply, darc.ID, *Client, *darc.Signer) {
 
 }
 func TestCreateLTS_ETH(t *testing.T) {
-	_, gDarc, calypsoClient, signer := getLTS(t)
-	write := NewWrite(cothority.Suite, calypsoClient.ltsReply.LTSID, gDarc, calypsoClient.ltsReply.X, []byte("Sabrina"))
-	client, e := ethereum.GetClient()
+	cal, e := gocontracts.GetStaticCalypso()
 	require.Nil(t, e)
 	privateKey, err := ethereum.GetPrivateKey()
 	require.Nil(t, err)
+	_, gDarc, calypsoClient, signer := getLTS(t, *cal, privateKey)
+	write := NewWrite(cothority.Suite, calypsoClient.ltsReply.LTSID, gDarc, calypsoClient.ltsReply.X, []byte("Sabrina"))
+	client, e := ethereum.GetClient()
+	require.Nil(t, e)
 	temp := make([][]byte, 0)
 	for _, point := range write.Cs {
 		marshalled, e := point.MarshalBinary()
@@ -73,8 +77,7 @@ func TestCreateLTS_ETH(t *testing.T) {
 	rAddr, _, _, e := gocontracts.ServiceDeployReadRequest(privateKey, client, addr, data)
 	require.Nil(t, e)
 	fmt.Println("Read address ", rAddr)
-	cal, e := gocontracts.GetStaticCalypso()
-	require.Nil(t, e)
+
 	calypsoAddr := *cal
 	_, e = gocontracts.ServiceAddWriteRequest(privateKey, calypsoAddr, addr, client)
 	require.Nil(t, e)
