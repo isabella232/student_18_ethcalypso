@@ -21,4 +21,4 @@ script:
 
   ganache-cli -p 7545 -m "afraid topple foot suffer employ copy version nuclear venue tiger episode check" &
 
-  go test
+  go test ./...
