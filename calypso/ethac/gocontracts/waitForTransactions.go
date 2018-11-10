@@ -11,6 +11,7 @@ import (
 )
 
 func WaitForTransAction(tx *types.Transaction, client *ethclient.Client, duration int) {
+	return
 	for {
 		_, isPending, e := client.TransactionByHash(context.Background(), tx.Hash())
 		if e != nil {

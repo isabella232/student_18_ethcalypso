@@ -105,7 +105,7 @@ func (s *Service) CreateLTS(cl *CreateLTS) (reply *CreateLTSReply, err error) {
 		}
 		s.storage.Polys[string(reply.LTSID)] = &pubPoly{s.Suite().Point().Base(), dks.Commits}
 		s.storage.Rosters[string(reply.LTSID)] = &cl.Roster
-		//s.storage.OLIDs[string(reply.LTSID)] = cl.BCID
+		s.storage.ContractAddresses[string(reply.LTSID)] = cl.CalypsoAddress
 		s.storage.Unlock()
 		reply.X = shared.X
 	case <-time.After(propagationTimeout):
@@ -297,12 +297,12 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 
 // verifyReencryption checks that the read and the write instances match.
 func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
-	fmt.Println("BJORN BJORN BJORN BJORN")
 	err := func() error {
 		privateKey, e := ethereum.GetPrivateKey()
 		if e != nil {
 			return e
 		}
+		//cal := s.storage.ContractAddresses[]
 		client, e := ethereum.GetClient()
 		if e != nil {
 			return nil
@@ -312,7 +312,8 @@ func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
 		if e != nil {
 			return e
 		}
-		r, e := gocontracts.ServiceGetRead(verificationData.ETHReadAddress, client, privateKey)
+		rr := verificationData.ETHReadAddress
+		r, e := gocontracts.ServiceGetRead(rr, client, privateKey)
 		if e != nil {
 			return e
 		}
@@ -347,5 +348,6 @@ func newService(c *onet.Context) (onet.Service, error) {
 		log.Error(err)
 		return nil, err
 	}
+	s.storage.ContractAddresses = make(map[string]common.Address)
 	return s, nil
 }

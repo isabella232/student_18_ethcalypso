@@ -1,10 +1,10 @@
 package main
 
 import (
+	"io"
 	"encoding/hex"
 	"fmt"
-	"os"
-	"time"
+	"net/http"
 
 	"github.com/dedis/cothority"
 	"github.com/dedis/cothority/byzcoin/bcadmin/lib"
@@ -13,6 +13,7 @@ import (
 	"github.com/dedis/onet/network"
 	"github.com/dedis/student_18_ethcalypso/calypso"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 	cli "gopkg.in/urfave/cli.v1"
 )
 
@@ -28,10 +29,13 @@ var cmds = cli.Commands{
 				Name:  "roster, r",
 				Usage: "the roster of the cothority that will host the ledger",
 			},
-			cli.DurationFlag{
-				Name:  "interval, i",
-				Usage: "the block interval for this ledger",
-				Value: 5 * time.Second,
+			cli.StringFlag{
+				Name:  "PrivateKey, pk",
+				Usage: "The privatekey that you will use to interact with ethereum",
+			},
+			cli.StringFlag{
+				Name:  "Calypso",
+				Usage: "The Calypso contract you will interact with",
 			},
 		},
 		Action: LTSID,
@@ -53,6 +57,14 @@ var cmds = cli.Commands{
 				Name:  "roster, r",
 				Usage: "the roster of the cothority that will host the ledger",
 			},
+			cli.StringFlag{
+				Name:  "PrivateKey, pk",
+				Usage: "The privatekey that you will use to interact with ethereum",
+			},
+			cli.StringFlag{
+				Name:  "Calypso",
+				Usage: "The Calypso contract you will interact with",
+			},
 		},
 		Action: AddWrite,
 	},
@@ -63,11 +75,19 @@ var cmds = cli.Commands{
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "wr",
-				Usage: "the ByzCoin config to use",
+				Usage: "Address of the write request",
 			},
 			cli.StringFlag{
 				Name:  "roster, r",
 				Usage: "the roster of the cothority that will host the ledger",
+			},
+			cli.StringFlag{
+				Name:  "PrivateKey, pk",
+				Usage: "The privatekey that you will use to interact with ethereum",
+			},
+			cli.StringFlag{
+				Name:  "Calypso",
+				Usage: "The Calypso contract you will interact with",
 			},
 		},
 		Action: AddRead,
@@ -98,10 +118,6 @@ func init() {
 	network.RegisterMessages(&darc.Darc{}, &darc.Identity{}, &darc.Signer{})
 }
 
-func show(c *cli.Context) {
-	fmt.Println(c.String("bc"))
-}
-
 func LTSID(c *cli.Context) error {
 	fn := c.String("roster")
 	r, err := lib.ReadRoster(fn)
@@ -109,11 +125,18 @@ func LTSID(c *cli.Context) error {
 		return err
 	}
 	roster := r.NewRosterWithRoot(r.List[0])
-	fmt.Println("Roster ", roster)
-	calypsoClient := calypso.NewClient(*roster)
-	LTS, e := calypsoClient.CreateLTS()
+	pk := c.String("pk")
+	privateKey, e := crypto.HexToECDSA(pk)
+	if e != nil {
+		log.Fatal(e)
+	}
+	cal := c.String("Calypso")
+	calAddr := common.HexToAddress(cal)
+	calypsoClient := calypso.NewClient(*roster, privateKey)
+	LTS, e := calypsoClient.CreateLTS(calAddr)
 	if e != nil {
 		fmt.Println("Can't get LTS")
+		fmt.Println(e)
 		return e
 	}
 	hexLTSID := hex.EncodeToString(LTS.LTSID)
@@ -143,81 +166,105 @@ func init() {
 }
 
 func DecryptKey(c *cli.Context) {
+	/*
+		wr := c.String("wr")
+		rr := c.String("rr")
+		wrAddr := common.HexToAddress(wr)
+		rrAddr := common.HexToAddress(rr)
+		fn := c.String("roster")
+		r, err := lib.ReadRoster(fn)
+		if err != nil {
+			log.Fatal(err)
+		}
+		roster := r.NewRosterWithRoot(r.List[0])
+		calypsoClient := calypso.NewClient(*roster)
+		dk := &calypso.DecryptKey{
+			Write: wrAddr,
+			Read:  rrAddr,
+		}
+		dkr, e := calypsoClient.DecryptKey(dk)
+		if e != nil {
+			log.Fatal(e)
+		}
+		fmt.Println("Xhat: ", dkr.XhatEnc.String())
+		fmt.Println("Cs", dkr.Cs)
+		fmt.Println("X is ", dkr.X.String())
+	*/
+}
+
+func AddRead(c *cli.Context) {
 	wr := c.String("wr")
-	rr := c.String("rr")
 	wrAddr := common.HexToAddress(wr)
-	rrAddr := common.HexToAddress(rr)
 	fn := c.String("roster")
 	r, err := lib.ReadRoster(fn)
 	if err != nil {
 		log.Fatal(err)
 	}
 	roster := r.NewRosterWithRoot(r.List[0])
-	calypsoClient := calypso.NewClient(*roster)
-	dk := &calypso.DecryptKey{
-		Write: wrAddr,
-		Read:  rrAddr,
-	}
-	dkr, e := calypsoClient.DecryptKey(dk)
+	fmt.Println("Roster ", roster)
+	pk := c.String("pk")
+	privateKey, e := crypto.HexToECDSA(pk)
 	if e != nil {
 		log.Fatal(e)
 	}
-	fmt.Println("Xhat: ", dkr.XhatEnc.String())
-	fmt.Println("Cs", dkr.Cs)
-	fmt.Println("X is ", dkr.X.String())
-}
-
-func AddRead(c *cli.Context) error {
-	wr := c.String("wr")
-	wrAddr := common.HexToAddress(wr)
-	fn := c.String("roster")
-	r, err := lib.ReadRoster(fn)
-	if err != nil {
-		return err
-	}
-	roster := r.NewRosterWithRoot(r.List[0])
-	fmt.Println("Roster ", roster)
-	calypsoClient := calypso.NewClient(*roster)
-	secret, rAddr, e := calypsoClient.AddRead(wrAddr)
+	cal := c.String("Calypso")
+	calAddr := common.HexToAddress(cal)
+	calypsoClient := calypso.NewClient(*roster, privateKey)
+	secret, rAddr, e := calypsoClient.AddRead(wrAddr, calAddr)
 	if e != nil {
-		return e
+		log.Fatal(e)
 	}
 	fmt.Println("Your secret is: ", secret)
 	fmt.Println("Read address is ", rAddr.Hex())
-	return nil
 }
 
-func AddWrite(c *cli.Context) error {
+func AddWrite(c *cli.Context) {
 	ltsid := c.String("LTSID")
 	X := c.String("X")
 	xHex, e := hex.DecodeString(X)
 	if e != nil {
 		log.Fatal(e)
 	}
+	pk := c.String("pk")
+	privateKey, e := crypto.HexToECDSA(pk)
+	if e != nil {
+		log.Fatal(e)
+	}
+	cal := c.String("Calypso")
+	calAddr := common.HexToAddress(cal)
 	point := cothority.Suite.Point()
 	e = point.UnmarshalBinary(xHex)
 	if e != nil {
-		return e
+		log.Fatal(e)
 	}
 	fmt.Println("LTSID: ", ltsid)
 	fmt.Println("Value of X: ", X)
 	fn := c.String("roster")
 	r, err := lib.ReadRoster(fn)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
 	roster := r.NewRosterWithRoot(r.List[0])
 	fmt.Println("Roster ", roster)
-	calypsoClient := calypso.NewClient(*roster)
+	calypsoClient := calypso.NewClient(*roster, privateKey)
 	id, e := hex.DecodeString(ltsid)
 	if e != nil {
-		return e
+		log.Fatal(e)
 	}
-	wrAddr, e := calypsoClient.AddWrite(id, point, []byte("Sabrina"))
+	wrAddr, e := calypsoClient.AddWrite(id, point, []byte("Sabrina"), calAddr)
 	fmt.Println("Address of write is: ", wrAddr.Hex())
-	return e
+	if e != nil {
+		log.Fatal(e)
+	}
 }
 
 func main() {
-	log.ErrFatal(cliApp.Run(os.Args))
+	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/Bjorn", IndexWebsite)
+}
+
+var tpl *template.Template
+
+func IndexWebsite(wr http.ResponseWriter, req *http.Request) {
+	io.
 }

@@ -5,11 +5,10 @@ import (
 	"testing"
 
 	"github.com/dedis/cothority"
-	"github.com/dedis/student_18_ethcalypso/calypso/ethereum"
 	"github.com/stretchr/testify/require"
 )
 
-func TestAddAWriteRequest(t *testing.T) {
+/*func TestAddAWriteRequest(t *testing.T) {
 	client, e := ethereum.GetClient()
 	require.Nil(t, e)
 	privateKey, e := ethereum.GetPrivateKey()
@@ -33,7 +32,7 @@ func TestAddAWriteRequest(t *testing.T) {
 	require.Equal(t, "Sabrina", string(wr.LTSID))
 	//Check that we still have the same points
 	require.True(t, wr.U.Equal(point))
-}
+}*/
 
 func TestEmptyCalypso(t *testing.T) {
 	a, e := GetStaticCalypso()
@@ -41,7 +40,7 @@ func TestEmptyCalypso(t *testing.T) {
 	require.Nil(t, e)
 }
 
-func TestAddReadRequestToCalypso(t *testing.T) {
+/*func TestAddReadRequestToCalypso(t *testing.T) {
 	client, e := ethereum.GetClient()
 	require.Nil(t, e)
 	privateKey, e := ethereum.GetPrivateKey()
@@ -75,7 +74,7 @@ func TestAddReadRequestToCalypso(t *testing.T) {
 	require.NotNil(t, e)
 	canRead := ServiceCheckIfCanRead(privateKey, *calypsoAddr, rr, client)
 	require.True(t, canRead)
-}
+}*/
 
 func GetMockWriteRequest(t *testing.T) ([]byte, []byte, []byte, []byte, [][]byte) {
 	data := []byte("Bjorn is a cool dude")

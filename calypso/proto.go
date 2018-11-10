@@ -63,8 +63,10 @@ type Read struct {
 type CreateLTS struct {
 	// Roster is the list of nodes that should participate in the DKG.
 	Roster onet.Roster
-	// BCID is the ID of the ByzCoin ledger that can use this LTS.
-	//BCID skipchain.SkipBlockID
+
+	//CalypsoAddress is the address of the deployed CalypsoAddress
+	//Where this LTS will store the writes and read.
+	CalypsoAddress common.Address
 }
 
 // CreateLTSReply is returned upon successfully setting up the distributed

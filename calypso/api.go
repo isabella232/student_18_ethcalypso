@@ -1,6 +1,7 @@
 package calypso
 
 import (
+	"crypto/ecdsa"
 	"errors"
 	"fmt"
 
@@ -16,9 +17,10 @@ import (
 
 // Client is a class to communicate to the calypso service.
 type Client struct {
-	roster   onet.Roster
-	c        *onet.Client
-	ltsReply *CreateLTSReply
+	roster     onet.Roster
+	c          *onet.Client
+	ltsReply   *CreateLTSReply
+	PrivateKey *ecdsa.PrivateKey
 }
 
 // WriteReply is returned upon successfully spawning a Write instance.
@@ -36,17 +38,19 @@ type ReadReply struct {
 // NewClient instantiates a new Client.
 // It takes as input an "initialized" byzcoin client
 // with an already created ledger
-func NewClient(r onet.Roster) *Client {
+func NewClient(r onet.Roster, pk *ecdsa.PrivateKey) *Client {
 	return &Client{roster: r, c: onet.NewClient(
-		cothority.Suite, ServiceName)}
+		cothority.Suite, ServiceName),
+		PrivateKey: pk}
 }
 
 // CreateLTS creates a random LTSID that can be used to reference
 // the LTS group created.
-func (c *Client) CreateLTS() (reply *CreateLTSReply, err error) {
+func (c *Client) CreateLTS(cal common.Address) (reply *CreateLTSReply, err error) {
 	reply = &CreateLTSReply{}
 	err = c.c.SendProtobuf(c.roster.List[0], &CreateLTS{
-		Roster: c.roster,
+		Roster:         c.roster,
+		CalypsoAddress: cal,
 	}, reply)
 	if err != nil {
 		fmt.Println("protobuf error")
@@ -67,15 +71,8 @@ func (c *Client) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error)
 	return reply, nil
 }
 
-func (c *Client) AddRead(wr common.Address) (kyber.Scalar, *common.Address, error) {
-	calypsoAddr, e := gocontracts.GetStaticCalypso()
-	if e != nil {
-		return nil, nil, e
-	}
-	privateKey, e := ethereum.GetPrivateKey()
-	if e != nil {
-		return nil, nil, e
-	}
+func (c *Client) AddRead(wr common.Address, cal common.Address) (kyber.Scalar, *common.Address, error) {
+	privateKey := c.PrivateKey
 	client, e := ethereum.GetClient()
 	if e != nil {
 		return nil, nil, e
@@ -90,22 +87,15 @@ func (c *Client) AddRead(wr common.Address) (kyber.Scalar, *common.Address, erro
 	if e != nil {
 		return nil, nil, e
 	}
-	_, e = gocontracts.ServiceAddReadRequest(privateKey, *calypsoAddr, rAddr, client)
+	_, e = gocontracts.ServiceAddReadRequest(privateKey, cal, rAddr, client)
 	if e != nil {
 		return nil, nil, e
 	}
 	return reader.Ed25519.Secret, &rAddr, nil
 }
 
-func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte) (*common.Address, error) {
-	calypsoAddr, e := gocontracts.GetStaticCalypso()
-	if e != nil {
-		return nil, e
-	}
-	privateKey, e := ethereum.GetPrivateKey()
-	if e != nil {
-		return nil, e
-	}
+func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte, cal common.Address) (*common.Address, error) {
+	privateKey := c.PrivateKey
 	client, e := ethereum.GetClient()
 	signer := darc.NewSignerEd25519(nil, nil)
 	darc1 := darc.NewDarc(darc.InitRules([]darc.Identity{signer.Identity()},
@@ -130,7 +120,7 @@ func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte) (*common.Add
 	if e != nil {
 		return nil, e
 	}
-	_, e = gocontracts.ServiceAddWriteRequest(privateKey, *calypsoAddr, addr, client)
+	_, e = gocontracts.ServiceAddWriteRequest(privateKey, cal, addr, client)
 	if e != nil {
 		return nil, e
 	}

@@ -10,9 +10,9 @@ import (
 var calypsoAddr *common.Address
 var calypsoError error
 
-func init() {
-	c := common.HexToAddress("0x86D3Fb6137e53664Eb7ff0e272fCB6eeb2BBC846")
-	calypsoAddr = &c
+func deploy() {
+	/*c := common.HexToAddress("0x86D3Fb6137e53664Eb7ff0e272fCB6eeb2BBC846")
+	calypsoAddr = &c*/
 	if calypsoAddr != nil {
 		fmt.Println("whaddup")
 		return
@@ -42,5 +42,6 @@ func init() {
 }
 
 func GetStaticCalypso() (*common.Address, error) {
+	deploy()
 	return calypsoAddr, calypsoError
 }
