@@ -105,3 +105,7 @@ func TestCreateLTS_ETH(t *testing.T) {
 	fmt.Println(string(key))
 
 }
+
+type structPK struct {
+	PrivateKey ecdsa.PrivateKey
+}

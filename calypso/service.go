@@ -134,9 +134,6 @@ func compare(a, b []byte) bool {
 // TODO: support ephemeral keys.
 func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error) {
 	privateKey, e := ethereum.GetPrivateKey()
-	if e != nil {
-		return nil, e
-	}
 	client, e := ethereum.GetClient()
 	if e != nil {
 		return nil, e
@@ -158,11 +155,7 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	if !compare(read.Write.Bytes(), wAddress.Bytes()) {
 		return nil, errors.New("This read did not point to this write")
 	}
-	c, e := gocontracts.GetStaticCalypso()
-	if e != nil {
-		return nil, e
-	}
-	cal := *c
+	cal := s.storage.ContractAddresses[string(write.LTSID)]
 	canRead := gocontracts.ServiceCheckIfCanRead(privateKey, cal, rAddress, client)
 	fmt.Println("Checked if I can read")
 	if !canRead {
