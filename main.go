@@ -1,10 +1,8 @@
 package main
 
 import (
-	"io"
 	"encoding/hex"
 	"fmt"
-	"net/http"
 
 	"github.com/dedis/cothority"
 	"github.com/dedis/cothority/byzcoin/bcadmin/lib"
@@ -259,12 +257,4 @@ func AddWrite(c *cli.Context) {
 }
 
 func main() {
-	http.ListenAndServe(":8080", nil)
-	http.HandleFunc("/Bjorn", IndexWebsite)
-}
-
-var tpl *template.Template
-
-func IndexWebsite(wr http.ResponseWriter, req *http.Request) {
-	io.
 }
