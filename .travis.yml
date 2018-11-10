@@ -19,6 +19,6 @@ script:
 
   npm install -g mocha
 
-  ganache-cli -p 7545 -m "afraid topple foot suffer employ copy version nuclear venue tiger episode check"
+  ganache-cli -p 7545 -m "afraid topple foot suffer employ copy version nuclear venue tiger episode check" &
 
   go test
