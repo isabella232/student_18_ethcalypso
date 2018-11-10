@@ -13,8 +13,6 @@ npm install -g mocha
 
 go get -u ./...
 
-cd $HOME/go/src/github.com/ethereum/go-ethereum ; make
+ganache-cli -p 7545 -m "afraid topple foot suffer employ copy version nuclear venue tiger episode check"
 
-cd $HOME/go/src/github.com/ethereum/go-ethereum ; make devtools
-
-abigen --sol ethac/contracts/Calypso.sol --pkg gocontracts > ethac/gocontracts/Calypso.go
+go test
