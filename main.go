@@ -1,12 +1,17 @@
 package main
 
 import (
+	"crypto/ecdsa"
 	"encoding/hex"
+	"flag"
 	"fmt"
+	"html/template"
+	"net/http"
 
 	"github.com/dedis/cothority"
 	"github.com/dedis/cothority/byzcoin/bcadmin/lib"
 	"github.com/dedis/cothority/darc"
+	"github.com/dedis/onet"
 	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
 	"github.com/dedis/student_18_ethcalypso/calypso"
@@ -256,5 +261,90 @@ func AddWrite(c *cli.Context) {
 	}
 }
 
+var tpl *template.Template
+var PrivateKey *ecdsa.PrivateKey
+var Calypso common.Address
+var Roster *onet.Roster
+var Client *calypso.Client
+
 func main() {
+	tpl = template.Must(template.ParseGlob("./templates/*.gohtml"))
+	pk := flag.String("pk", "", "The privatekey that you will use to interact with ethereum")
+	cal := flag.String("calypso", "", "The calypso contract that you will use to store your write and read requests")
+	r := flag.String("roster", "", "The roster for the SMC")
+	flag.Parse()
+	Calypso = common.HexToAddress(*cal)
+	PrivateKey, e := crypto.HexToECDSA(*pk)
+	if e != nil {
+		fmt.Println(*PrivateKey)
+		log.Fatal(e)
+	}
+	fn := *r
+	roster, err := lib.ReadRoster(fn)
+	if err != nil {
+		fmt.Println(roster)
+		log.Fatal(err)
+	}
+
+	Client = calypso.NewClient(*roster, PrivateKey)
+	http.HandleFunc("/", IndexWebsite)
+	http.HandleFunc("/GetLTSID", GetLTSID)
+	http.HandleFunc("/GetScript", GetScript)
+	http.HandleFunc("/AddWrite", addWrite)
+	http.HandleFunc("/AddRead", addRead)
+	http.ListenAndServe(":8080", nil)
+}
+
+func IndexWebsite(wr http.ResponseWriter, req *http.Request) {
+	tpl.ExecuteTemplate(wr, "index.gohtml", nil)
+}
+
+func GetLTSID(wr http.ResponseWriter, req *http.Request) {
+	LTS, e := Client.CreateLTS(Calypso)
+	if e != nil {
+		fmt.Println("Can't get LTS")
+		log.Fatal(e)
+	}
+	hexLTSID := hex.EncodeToString(LTS.LTSID)
+	fmt.Println("LTSID: ", hexLTSID)
+	fmt.Println("X: ", LTS.X.String())
+	fmt.Fprintf(wr, hexLTSID+" "+LTS.X.String())
+}
+
+func GetScript(wr http.ResponseWriter, req *http.Request) {
+	http.ServeFile(wr, req, "scripts/index.js")
+}
+
+func addWrite(wr http.ResponseWriter, req *http.Request) {
+	ltsid := req.FormValue("LTSID")
+	x := req.FormValue("X")
+	data := req.FormValue("data")
+	xHex, e := hex.DecodeString(x)
+	if e != nil {
+		log.Fatal(e)
+	}
+	point := cothority.Suite.Point()
+	e = point.UnmarshalBinary(xHex)
+	if e != nil {
+		log.Fatal(e)
+	}
+	id, e := hex.DecodeString(ltsid)
+	if e != nil {
+		log.Fatal(e)
+	}
+	wAddr, e := Client.AddWrite(id, point, []byte(data), Calypso)
+	if e != nil {
+		log.Fatal(e)
+	}
+	fmt.Fprint(wr, wAddr.String())
+}
+
+func addRead(wr http.ResponseWriter, req *http.Request) {
+	w := req.FormValue("write")
+	wrAddr := common.HexToAddress(w)
+	secret, rr, e := Client.AddRead(wrAddr, Calypso)
+	if e != nil {
+		log.Fatal(e)
+	}
+	fmt.Fprint(wr, secret.String()+" "+rr.String())
 }
