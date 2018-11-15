@@ -94,7 +94,7 @@ func (c *Client) AddRead(wr common.Address, cal common.Address) (kyber.Scalar, *
 	return reader.Ed25519.Secret, &rAddr, nil
 }
 
-func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte, cal common.Address) (*common.Address, error) {
+func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte, cal common.Address, p []common.Address) (*common.Address, error) {
 	privateKey := c.PrivateKey
 	client, e := ethereum.GetClient()
 	signer := darc.NewSignerEd25519(nil, nil)
@@ -128,7 +128,7 @@ func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte, cal common.A
 	if e != nil {
 		return nil, e
 	}
-	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData, temp, Ubar, F, E)
+	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, p, wrData, temp, Ubar, F, E)
 	if e != nil {
 		return nil, e
 	}
