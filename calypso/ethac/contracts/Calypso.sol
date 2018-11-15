@@ -51,7 +51,12 @@ contract Calypso {
     }
 
     function isValidReadRequest(address a)  public view returns (bool) {
-        return rrHolder.hasReadRequest(a);
+        require(rrHolder.hasReadRequest(a), "It must at first be a valid read request.");
+        ReadRequest rr = ReadRequest(a);
+        address wrA = rr.writeRequest();
+        WriteRequest wr = WriteRequest(wrA);
+        require(wr.CanRead(rr.owner()), "Is this a member of the policy of the pointed WriteRequest");
+        return true;
     }
 
 }

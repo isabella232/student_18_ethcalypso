@@ -2,7 +2,6 @@ package calypso
 
 import (
 	"crypto/sha256"
-	"errors"
 
 	"github.com/dedis/cothority/darc"
 	"github.com/dedis/kyber"
@@ -62,7 +61,7 @@ func NewWrite(suite suites.Suite, ltsid []byte, writeDarc darc.ID, X kyber.Point
 	wr.Ubar.MarshalTo(hash)
 	w.MarshalTo(hash)
 	wBar.MarshalTo(hash)
-	hash.Write(writeDarc)
+	//hash.Write(writeDarc)
 	wr.E = suite.Scalar().SetBytes(hash.Sum(nil))
 	wr.F = suite.Scalar().Add(s, suite.Scalar().Mul(wr.E, r))
 	return wr
@@ -73,36 +72,6 @@ func min(a, b int) int {
 		return a
 	}
 	return b
-}
-
-// CheckProof verifies that the write-request has actually been created with
-// somebody having access to the secret key.
-func (wr *Write) CheckProof(suite suite, writeID darc.ID) error {
-	gf := suite.Point().Mul(wr.F, nil)
-	ue := suite.Point().Mul(suite.Scalar().Neg(wr.E), wr.U)
-	w := suite.Point().Add(gf, ue)
-
-	gBar := suite.Point().Mul(suite.Scalar().SetBytes(wr.LTSID), nil)
-	gfBar := suite.Point().Mul(wr.F, gBar)
-	ueBar := suite.Point().Mul(suite.Scalar().Neg(wr.E), wr.Ubar)
-	wBar := suite.Point().Add(gfBar, ueBar)
-
-	hash := sha256.New()
-	for _, c := range wr.Cs {
-		c.MarshalTo(hash)
-	}
-	wr.U.MarshalTo(hash)
-	wr.Ubar.MarshalTo(hash)
-	w.MarshalTo(hash)
-	wBar.MarshalTo(hash)
-	hash.Write(writeID)
-
-	e := suite.Scalar().SetBytes(hash.Sum(nil))
-	if e.Equal(wr.E) {
-		return nil
-	}
-
-	return errors.New("recreated proof is not equal to stored proof")
 }
 
 // EncodeKey can be used by the writer to ByzCoin to encode his symmetric

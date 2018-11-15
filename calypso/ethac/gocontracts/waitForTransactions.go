@@ -2,7 +2,6 @@ package gocontracts
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -15,11 +14,9 @@ func WaitForTransAction(tx *types.Transaction, client *ethclient.Client, duratio
 	for {
 		_, isPending, e := client.TransactionByHash(context.Background(), tx.Hash())
 		if e != nil {
-			fmt.Println("waiting for transaction")
 			log.Fatal(e)
 		}
 		if !isPending {
-			fmt.Println("it stopped pending")
 			return
 		}
 		time.Sleep(time.Duration(duration) * time.Second)

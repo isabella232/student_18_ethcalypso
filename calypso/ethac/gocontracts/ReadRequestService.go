@@ -59,9 +59,9 @@ func CreateCallOpts(ctx context.Context, privateKey *ecdsa.PrivateKey, client *e
 		return nil, errors.New("Could not cast public key to ECDSA")
 	}
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	fmt.Println(fromAddress)
 	call := &bind.CallOpts{
 		Pending: true,
-		From:    fromAddress,
 		Context: ctx,
 	}
 	return call, nil

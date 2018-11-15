@@ -50,6 +50,7 @@ func getLTS(t *testing.T, cal common.Address, privateKey *ecdsa.PrivateKey) (*Cr
 	return ltsReply, darc1.GetBaseID(), calypsoClient, &reader1
 
 }
+
 func TestCreateLTS_ETH(t *testing.T) {
 	cal, e := gocontracts.GetStaticCalypso()
 	require.Nil(t, e)
@@ -72,7 +73,15 @@ func TestCreateLTS_ETH(t *testing.T) {
 	require.Nil(t, e)
 	wrData, e := write.U.MarshalBinary()
 	require.Nil(t, e)
-	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData, temp)
+	ubData, e := write.Ubar.MarshalBinary()
+	require.Nil(t, e)
+	eData, e := write.E.MarshalBinary()
+	fmt.Println("edata", eData)
+	require.Nil(t, e)
+	fData, e := write.F.MarshalBinary()
+	fmt.Println("fData", fData)
+	require.Nil(t, e)
+	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData, temp, ubData, fData, eData)
 	require.Nil(t, e)
 	rAddr, _, _, e := gocontracts.ServiceDeployReadRequest(privateKey, client, addr, data)
 	require.Nil(t, e)
@@ -86,6 +95,9 @@ func TestCreateLTS_ETH(t *testing.T) {
 	wr, e := gocontracts.ServiceGetWriteRequest(privateKey, client, addr)
 	require.Nil(t, e)
 	require.True(t, wr.U.Equal(write.U))
+	e = CheckProof(cothority.Suite, wr)
+	require.Nil(t, e)
+	fmt.Println("Checking zero knowledge proof")
 	_, e = gocontracts.ServiceGetRead(rAddr, client, privateKey)
 	require.Nil(t, e)
 	dkr := &DecryptKey{

@@ -116,7 +116,19 @@ func (c *Client) AddWrite(LTSID []byte, X kyber.Point, data []byte, cal common.A
 	if e != nil {
 		return nil, e
 	}
-	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData, temp)
+	Ubar, e := write.Ubar.MarshalBinary()
+	if e != nil {
+		return nil, e
+	}
+	F, e := write.F.MarshalBinary()
+	if e != nil {
+		return nil, e
+	}
+	E, e := write.E.MarshalBinary()
+	if e != nil {
+		return nil, e
+	}
+	addr, _, _, e := gocontracts.ServiceDeployWriteRequest(privateKey, client, write.Data, write.ExtraData, write.LTSID, write.ETHAdresses, wrData, temp, Ubar, F, E)
 	if e != nil {
 		return nil, e
 	}

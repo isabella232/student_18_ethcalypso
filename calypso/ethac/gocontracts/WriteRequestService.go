@@ -13,16 +13,19 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address, U []byte, cs [][]byte) (common.Address, *types.Transaction, *WriteRequest, error) {
+func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address, U []byte, cs [][]byte, Ubar []byte, F []byte, E []byte) (common.Address, *types.Transaction, *WriteRequest, error) {
 	auth, e := GetAuth(privateKey, client)
 	if e != nil {
 		log.Fatal(e)
 	}
 	temp := make([]byte, 0)
+	slice := make([]int64, 1)
+	slice[0] = 0
 	for j := 0; j < len(cs); j++ {
 		temp = append(temp, cs[j]...)
+		slice = append(slice, int64(len(cs[j])))
 	}
-	address, tx, instance, err := DeployWriteRequest(auth, client, d, ed, ltsid, p, U, temp, int64(len(cs)))
+	address, tx, instance, err := DeployWriteRequest(auth, client, d, ed, ltsid, p, U, temp, slice, F, E, Ubar)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,6 +42,9 @@ type Write struct {
 	U         kyber.Point
 	LTSID     []byte
 	Cs        []kyber.Point
+	Ubar      kyber.Point
+	E         kyber.Scalar
+	F         kyber.Scalar
 }
 
 func ServiceGetWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, a common.Address) (*Write, error) {
@@ -70,18 +76,26 @@ func ServiceGetWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Clie
 	if e != nil {
 		return nil, e
 	}
-	split, e := wrCaller.Split(call)
+	slice, e := wrCaller.GetSlice(call)
+	if e != nil {
+		fmt.Println("slice", slice)
+		return nil, e
+	}
+	ubData, e := wrCaller.Ubar(call)
 	if e != nil {
 		return nil, e
 	}
-	fmt.Println("Split ", split)
-	temp := make([][]byte, 0)
-	n := int64(len(Cs)) / split
-	for i := int64(0); i < split-1; i++ {
-		temp = append(temp, Cs[i*n:i*(n+1)])
+	fData, e := wrCaller.F(call)
+	if e != nil {
+		return nil, e
 	}
-	if int64(len(Cs)) == n {
-		temp = append(temp, Cs)
+	eData, e := wrCaller.E(call)
+	if e != nil {
+		return nil, e
+	}
+	temp := make([][]byte, 0)
+	for i := 0; i < len(slice)-1; i++ {
+		temp = append(temp, Cs[slice[i]:slice[i+1]])
 	}
 	points := make([]kyber.Point, 0)
 	for i := 0; i < len(temp); i++ {
@@ -97,12 +111,33 @@ func ServiceGetWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Clie
 	if e != nil {
 		return nil, e
 	}
+	Ubar := cothority.Suite.Point()
+	e = Ubar.UnmarshalBinary(ubData)
+	fmt.Println("F data!!", fData)
+	fmt.Println("E data!!", eData)
+	fmt.Println("Ubar")
+	F := cothority.Suite.Scalar()
+	e = F.UnmarshalBinary(fData)
+
+	if e != nil {
+		return nil, e
+	}
+	fmt.Println("F")
+	E := cothority.Suite.Scalar()
+	e = E.UnmarshalBinary(eData)
+	if e != nil {
+		return nil, e
+	}
+	fmt.Println("E")
 	write := &Write{
 		Data:      data,
 		ExtraData: ed,
 		U:         point,
 		LTSID:     ltsid,
 		Cs:        points,
+		Ubar:      Ubar,
+		E:         E,
+		F:         F,
 	}
 	return write, nil
 }

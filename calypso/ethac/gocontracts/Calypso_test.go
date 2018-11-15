@@ -1,6 +1,7 @@
 package gocontracts
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/dedis/cothority"
@@ -33,11 +34,11 @@ import (
 	require.True(t, wr.U.Equal(point))
 }*/
 
-/*func TestEmptyCalypso(t *testing.T) {
+func TestEmptyCalypso(t *testing.T) {
 	a, e := GetStaticCalypso()
 	fmt.Println("Address of claypso", (*a).Hex())
 	require.Nil(t, e)
-}*/
+}
 
 /*func TestAddReadRequestToCalypso(t *testing.T) {
 	client, e := ethereum.GetClient()

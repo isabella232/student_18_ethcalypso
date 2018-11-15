@@ -2,7 +2,6 @@ const LTSReply = document.getElementById("LTSReply");
 const WriteAddress = document.getElementById("WriteAddress");
 const ReadADdress = document.getElementById("ReadAddress");
 const secret = document.getElementById("Secret");
-console.log(5);
 
 $('#LTSIDform').submit(function(e){
     e.preventDefault();
@@ -12,11 +11,9 @@ $('#LTSIDform').submit(function(e){
         data: $('#LTSIDform').serialize(),
         success:function(data){
             //whatever you wanna do after the form is successfully submitted
-            const res = data.Split(" ");
-            const LTSID = res[0];
-            const X = res[1];
-            LTSReply.innerHTML = "LTSID: " +  LTSID + " and the X value: " + X;
-            console.log("This all happened right");
+            const d = JSON.stringify(data);
+            console.log(typeof(d));
+            LTSReply.innerHTML = d;
         }
     });
 });
