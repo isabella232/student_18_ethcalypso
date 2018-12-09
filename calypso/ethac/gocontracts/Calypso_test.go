@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dedis/cothority"
 	"github.com/stretchr/testify/require"
 )
 
@@ -75,15 +74,3 @@ func TestEmptyCalypso(t *testing.T) {
 	canRead := ServiceCheckIfCanRead(privateKey, *calypsoAddr, rr, client)
 	require.True(t, canRead)
 }*/
-
-func GetMockWriteRequest(t *testing.T) ([]byte, []byte, []byte, []byte, [][]byte) {
-	data := []byte("Bjorn is a cool dude")
-	ed := []byte("Bjorn is an extra cool dude")
-	ltsid := []byte("Sabrina")
-	point := cothority.Suite.Point()
-	u, e := point.MarshalBinary()
-	require.Nil(t, e)
-	cs := make([][]byte, 0)
-	cs = append(cs, u)
-	return data, ed, ltsid, u, cs
-}

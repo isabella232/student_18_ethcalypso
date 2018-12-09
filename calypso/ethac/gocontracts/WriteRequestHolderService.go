@@ -2,7 +2,6 @@ package gocontracts
 
 import (
 	"crypto/ecdsa"
-	"fmt"
 	"log"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -10,8 +9,8 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployWriteRequestHolder(privateKey *ecdsa.PrivateKey, client *ethclient.Client) (common.Address, *types.Transaction, *WriteRequestHolder, error) {
-	auth, e := GetAuth(privateKey, client)
+func ServiceDeployWriteRequestHolder(privateKey *ecdsa.PrivateKey, client *ethclient.Client, nonce uint64) (common.Address, *types.Transaction, *WriteRequestHolder, error) {
+	auth, e := GetAuth(privateKey, client, nonce)
 	if e != nil {
 		log.Fatal(e)
 	}
@@ -19,7 +18,5 @@ func ServiceDeployWriteRequestHolder(privateKey *ecdsa.PrivateKey, client *ethcl
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("The nonce is ", tx.Nonce())
-	WaitForTransAction(tx, client, 1)
 	return address, tx, instance, err
 }

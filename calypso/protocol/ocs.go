@@ -8,7 +8,6 @@ paper-draft about onchain-secrets (called BlockMage).
 import (
 	"crypto/sha256"
 	"errors"
-	"fmt"
 	"sync"
 	"time"
 
@@ -93,7 +92,6 @@ func (o *OCS) Start() error {
 		log.Lvl1("OCS protocol timeout")
 		o.finish(false)
 	})
-	fmt.Println("I am broadcasting")
 	errs := o.Broadcast(rc)
 	if len(errs) > (len(o.Roster().List)-1)/3 {
 		log.Errorf("Some nodes failed with error(s) %v", errs)
@@ -129,8 +127,6 @@ func (o *OCS) reencrypt(r structReencrypt) error {
 	uiHat.MarshalTo(hash)
 	hiHat.MarshalTo(hash)
 	ei := cothority.Suite.Scalar().SetBytes(hash.Sum(nil))
-
-	fmt.Println("Bjorn is sending to parent")
 	return o.SendToParent(&ReencryptReply{
 		Ui: ui,
 		Ei: ei,

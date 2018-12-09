@@ -14,7 +14,7 @@ const connectionString string = "https://ropsten.infura.io/"
 const localConnectionString string = "http://127.0.0.1:7545"
 
 func init() {
-	client, e = ethclient.Dial(localConnectionString)
+	client, e = ethclient.Dial(connectionString)
 	if e != nil {
 		fmt.Println("Bjo")
 		log.Fatal(e)

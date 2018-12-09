@@ -40,7 +40,6 @@ var ServiceName = "Calypso"
 const propagationTimeout = 10 * time.Second
 
 func init() {
-	fmt.Println("I entered the init of service student")
 	var err error
 	calypsoID, err = onet.RegisterNewService(ServiceName, newService)
 	if err != nil {
@@ -69,6 +68,14 @@ type vData struct {
 	ETHReadAddress common.Address
 	Ephemeral      kyber.Point
 	Signature      *darc.Signature
+}
+
+//LogAddress takes in an address of a deployed contract
+//and stores it in the storage of the LTS
+func (s *Service) LogAddress(la *LogAddress) (lr *LogAddressReply, err error) {
+	fmt.Println("Bjorn this function worked")
+	lr = &LogAddressReply{Added: true}
+	return lr, nil
 }
 
 // CreateLTS takes as input a roster with a list of all nodes that should
@@ -139,25 +146,31 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 		return nil, e
 	}
 	reply = &DecryptKeyReply{}
-	log.Lvl2("Re-encrypt the key to the public key of the reader")
 	wAddress := dkr.Write
 	rAddress := dkr.Read
-
+	readHash := dkr.ReadHash
+	isReadMined, e := gocontracts.IsMined(client, readHash)
+	if !isReadMined || e != nil {
+		return nil, errors.New("Read was not mined")
+	}
 	write, e := gocontracts.ServiceGetWriteRequest(privateKey, client, wAddress)
 	if e != nil {
 		return nil, e
 	}
 	read, e := gocontracts.ServiceGetRead(rAddress, client, privateKey)
 	if e != nil {
-		fmt.Println("Read")
 		return nil, e
+	}
+	writeHash := common.BytesToHash(read.WriteHash)
+	isWriteMined, e := gocontracts.IsMined(client, writeHash)
+	if !isWriteMined || e != nil {
+		return nil, errors.New("The write was not mined")
 	}
 	if !compare(read.Write.Bytes(), wAddress.Bytes()) {
 		return nil, errors.New("This read did not point to this write")
 	}
 	cal := s.storage.ContractAddresses[string(write.LTSID)]
 	canRead := gocontracts.ServiceCheckIfCanRead(privateKey, cal, rAddress, client)
-	fmt.Println("Checked if I can read")
 	if !canRead {
 		return nil, errors.New("This is not a valid read/write pair")
 	}
@@ -185,7 +198,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 	}
 	ocsProto := pi.(*protocol.OCS)
 	//I'll need U. I have U.
-	fmt.Println("WRite U", write.U)
 	ocsProto.U = write.U
 
 	verificationData := &vData{
@@ -214,7 +226,6 @@ func (s *Service) DecryptKey(dkr *DecryptKey) (reply *DecryptKeyReply, err error
 
 	log.Lvl3("Starting reencryption protocol")
 	ocsProto.SetConfig(&onet.GenericConfig{Data: write.LTSID})
-	fmt.Println("I am starting the start protocol")
 	err = ocsProto.Start()
 	if err != nil {
 		return nil, err
@@ -294,7 +305,7 @@ func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
 		if e != nil {
 			return e
 		}
-		//cal := s.storage.ContractAddresses[]
+
 		client, e := ethereum.GetClient()
 		if e != nil {
 			return nil
@@ -309,6 +320,7 @@ func (s *Service) verifyReencryption(rc *protocol.Reencrypt) bool {
 		if e != nil {
 			return e
 		}
+
 		if verificationData.Ephemeral != nil {
 			return errors.New("ephemeral keys not supported yet")
 		}
@@ -331,7 +343,7 @@ func newService(c *onet.Context) (onet.Service, error) {
 	s := &Service{
 		ServiceProcessor: onet.NewServiceProcessor(c),
 	}
-	if err := s.RegisterHandlers(s.CreateLTS, s.DecryptKey, s.SharedPublic); err != nil {
+	if err := s.RegisterHandlers(s.CreateLTS, s.DecryptKey, s.SharedPublic, s.LogAddress); err != nil {
 		return nil, errors.New("couldn't register messages")
 	}
 	//byzcoin.RegisterContract(c, ContractWriteID, s.ContractWrite)
@@ -341,5 +353,6 @@ func newService(c *onet.Context) (onet.Service, error) {
 		return nil, err
 	}
 	s.storage.ContractAddresses = make(map[string]common.Address)
+	s.storage.ContractTx = make(map[string][]byte)
 	return s, nil
 }

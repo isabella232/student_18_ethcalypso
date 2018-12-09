@@ -80,6 +80,14 @@ type CreateLTSReply struct {
 	// an LTS?
 }
 
+type LogAddressReply struct {
+	Added bool
+}
+
+type LogAddress struct {
+	A common.Address
+}
+
 // DecryptKey is sent by a reader after he successfully stored a 'Read' request
 // in byzcoin Client.
 type DecryptKey struct {
@@ -87,6 +95,8 @@ type DecryptKey struct {
 	Read common.Address
 	// Write is the proof containing the write request.
 	Write common.Address
+	//ReadHash is the hash of the read request transaction
+	ReadHash common.Hash
 }
 
 // DecryptKeyReply is returned if the service verified successfully that the

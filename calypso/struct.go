@@ -2,17 +2,19 @@ package calypso
 
 import (
 	"crypto/sha256"
+	"fmt"
 
-	"github.com/dedis/cothority/darc"
 	"github.com/dedis/kyber"
 	"github.com/dedis/kyber/suites"
 	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func init() {
+	fmt.Println("Bjorn")
 	network.RegisterMessages(CreateLTS{}, CreateLTSReply{},
-		DecryptKey{}, DecryptKeyReply{})
+		DecryptKey{}, DecryptKeyReply{}, LogAddress{}, LogAddressReply{})
 }
 
 type suite interface {
@@ -35,7 +37,7 @@ type suite interface {
 // Output:
 //   - write - structure containing the encrypted key U, Cs and the NIZKP of
 //   it containing the reader-darc.
-func NewWrite(suite suites.Suite, ltsid []byte, writeDarc darc.ID, X kyber.Point, key []byte) *Write {
+func NewWrite(suite suites.Suite, ltsid []byte, policy common.Address, X kyber.Point, key []byte) *Write {
 	wr := &Write{LTSID: ltsid}
 	r := suite.Scalar().Pick(suite.RandomStream())
 	C := suite.Point().Mul(r, X)

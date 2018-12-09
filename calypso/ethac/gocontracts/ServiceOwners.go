@@ -2,7 +2,6 @@ package gocontracts
 
 import (
 	"crypto/ecdsa"
-	"fmt"
 	"log"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -10,18 +9,16 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployOwners(privateKey *ecdsa.PrivateKey, client *ethclient.Client) (common.Address, *types.Transaction, *Owners, error) {
-	auth, e := GetAuth(privateKey, client)
+func ServiceDeployOwners(privateKey *ecdsa.PrivateKey, client *ethclient.Client, a []common.Address, nonce uint64) (common.Address, *types.Transaction, *Owners, error) {
+	auth, e := GetAuth(privateKey, client, nonce)
 	if e != nil {
 		log.Fatal(e)
 	}
 
-	address, tx, instance, err := DeployOwners(auth, client)
+	address, tx, instance, err := DeployOwners(auth, client, a)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("The nonce is ", tx.Nonce())
-	WaitForTransAction(tx, client, 1)
 	return address, tx, instance, err
 }
 
@@ -30,7 +27,11 @@ func ServiceUpdatOwners(a common.Address, deployed common.Address, client *ethcl
 	if e != nil {
 		return nil, e
 	}
-	auth, e := GetAuth(privateKey, client)
+	nonce, e := GetNonce(privateKey, client)
+	if e != nil {
+		return nil, e
+	}
+	auth, e := GetAuth(privateKey, client, nonce)
 	if e != nil {
 		return nil, e
 	}

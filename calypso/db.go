@@ -24,6 +24,7 @@ type storage1 struct {
 	Rosters           map[string]*onet.Roster
 	OLIDs             map[string]skipchain.SkipBlockID
 	ContractAddresses map[string]common.Address
+	ContractTx        map[string][]byte
 
 	sync.Mutex
 }

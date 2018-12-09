@@ -30,15 +30,6 @@ func deploy() {
 	if calypsoAddr == nil && calypsoError == nil {
 		fmt.Println("what is going on")
 	}
-	owners := ethereum.GetTestListOfAddresses()
-	for _, owner := range owners {
-		_, e = ServiceUpdatOwners(owner, *calypsoAddr, client, privateKey)
-		if e != nil {
-			calypsoAddr = nil
-			calypsoError = e
-			return
-		}
-	}
 }
 
 func GetStaticCalypso() (*common.Address, error) {

@@ -10,10 +10,9 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployReadRequestHolder(privateKey *ecdsa.PrivateKey, client *ethclient.Client) (common.Address, *types.Transaction, *ReadRequestHolder, error) {
-	auth, e := GetAuth(privateKey, client)
+func ServiceDeployReadRequestHolder(privateKey *ecdsa.PrivateKey, client *ethclient.Client, nonce uint64) (common.Address, *types.Transaction, *ReadRequestHolder, error) {
+	auth, e := GetAuth(privateKey, client, nonce)
 	if e != nil {
-		fmt.Println("Bjorn")
 		log.Fatal(e)
 	}
 
@@ -22,6 +21,5 @@ func ServiceDeployReadRequestHolder(privateKey *ecdsa.PrivateKey, client *ethcli
 		fmt.Println("bjorn")
 		log.Fatal(err)
 	}
-	WaitForTransAction(tx, client, 1)
 	return address, tx, instance, err
 }

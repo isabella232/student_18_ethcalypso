@@ -3,7 +3,6 @@ package gocontracts
 import (
 	"context"
 	"crypto/ecdsa"
-	"fmt"
 	"log"
 
 	"github.com/dedis/cothority"
@@ -13,8 +12,8 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p []common.Address, U []byte, cs [][]byte, Ubar []byte, F []byte, E []byte) (common.Address, *types.Transaction, *WriteRequest, error) {
-	auth, e := GetAuth(privateKey, client)
+func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Client, d []byte, ed []byte, ltsid []byte, p common.Address, U []byte, cs [][]byte, Ubar []byte, F []byte, E []byte, nonce uint64) (common.Address, *types.Transaction, *WriteRequest, error) {
+	auth, e := GetAuth(privateKey, client, nonce)
 	if e != nil {
 		log.Fatal(e)
 	}
@@ -29,7 +28,6 @@ func ServiceDeployWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.C
 	if err != nil {
 		log.Fatal(err)
 	}
-	WaitForTransAction(tx, client, 1)
 	return address, tx, instance, err
 }
 
@@ -78,7 +76,6 @@ func ServiceGetWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Clie
 	}
 	slice, e := wrCaller.GetSlice(call)
 	if e != nil {
-		fmt.Println("slice", slice)
 		return nil, e
 	}
 	ubData, e := wrCaller.Ubar(call)
@@ -113,22 +110,17 @@ func ServiceGetWriteRequest(privateKey *ecdsa.PrivateKey, client *ethclient.Clie
 	}
 	Ubar := cothority.Suite.Point()
 	e = Ubar.UnmarshalBinary(ubData)
-	fmt.Println("F data!!", fData)
-	fmt.Println("E data!!", eData)
-	fmt.Println("Ubar")
 	F := cothority.Suite.Scalar()
 	e = F.UnmarshalBinary(fData)
 
 	if e != nil {
 		return nil, e
 	}
-	fmt.Println("F")
 	E := cothority.Suite.Scalar()
 	e = E.UnmarshalBinary(eData)
 	if e != nil {
 		return nil, e
 	}
-	fmt.Println("E")
 	write := &Write{
 		Data:      data,
 		ExtraData: ed,
